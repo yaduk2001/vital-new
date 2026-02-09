@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Navbar from '../../components/Navbar';
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 export default function ServicesPage() {
   const industries = [
@@ -322,9 +323,11 @@ export default function ServicesPage() {
                     viewport={{ once: false, margin: "-100px" }}
                     className="order-1 md:order-2 z-10 w-24 h-24 rounded-full border-2 border-blue-500/30 shadow-[0_0_30px_rgba(59,130,246,0.4)] overflow-hidden relative bg-[#0A0F1A]"
                   >
-                    <img
+                    <Image
                       src="/images/web development.webp"
                       alt="Web Platforms"
+                      width={96}
+                      height={96}
                       className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
                     />
                   </motion.div>
@@ -346,9 +349,11 @@ export default function ServicesPage() {
                     viewport={{ once: false, margin: "-100px" }}
                     className="order-1 md:order-2 z-10 w-24 h-24 rounded-full border-2 border-green-500/30 shadow-[0_0_30px_rgba(34,197,94,0.4)] overflow-hidden relative bg-[#0A0F1A]"
                   >
-                    <img
+                    <Image
                       src="/images/app dev.webp"
                       alt="Mobile Applications"
+                      width={96}
+                      height={96}
                       className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
                     />
                   </motion.div>
@@ -398,9 +403,11 @@ export default function ServicesPage() {
                     viewport={{ once: false, margin: "-100px" }}
                     className="order-1 md:order-2 z-10 w-24 h-24 rounded-full border-2 border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.4)] overflow-hidden relative bg-[#0A0F1A]"
                   >
-                    <img
+                    <Image
                       src="/images/AI.webp"
                       alt="Artificial Intelligence"
+                      width={96}
+                      height={96}
                       className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
                     />
                   </motion.div>
@@ -422,9 +429,11 @@ export default function ServicesPage() {
                     viewport={{ once: false, margin: "-100px" }}
                     className="order-1 md:order-2 z-10 w-24 h-24 rounded-full border-2 border-orange-500/30 shadow-[0_0_30px_rgba(249,115,22,0.4)] overflow-hidden relative bg-[#0A0F1A]"
                   >
-                    <img
+                    <Image
                       src="/images/digital ecosystem.webp"
                       alt="Digital Ecosystems"
+                      width={96}
+                      height={96}
                       className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
                     />
                   </motion.div>
@@ -474,9 +483,11 @@ export default function ServicesPage() {
                     viewport={{ once: false, margin: "-100px" }}
                     className="order-1 md:order-2 z-10 w-24 h-24 rounded-full border-2 border-cyan-500/30 shadow-[0_0_30px_rgba(34,211,238,0.4)] overflow-hidden relative bg-[#0A0F1A]"
                   >
-                    <img
+                    <Image
                       src="/images/blockchain.webp"
                       alt="Blockchain Solutions"
+                      width={96}
+                      height={96}
                       className="w-full h-full object-cover transform scale-150 translate-x-5 hover:scale-175 transition-transform duration-500"
                     />
                   </motion.div>
@@ -498,9 +509,11 @@ export default function ServicesPage() {
                     viewport={{ once: false, margin: "-100px" }}
                     className="order-1 md:order-2 z-10 w-24 h-24 rounded-full border-2 border-red-500/30 shadow-[0_0_30px_rgba(248,113,113,0.4)] overflow-hidden relative bg-[#0A0F1A]"
                   >
-                    <img
+                    <Image
                       src="/images/game development.webp"
                       alt="Game Development"
+                      width={96}
+                      height={96}
                       className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
                     />
                   </motion.div>

@@ -26,7 +26,7 @@ export default function VideoLogo({
 		if (typeof sourceObj === 'string') {
 			return sourceObj; // Fallback for string sources
 		}
-		
+
 		// For now, prioritize MP4 since WebM files don't exist yet
 		// TODO: Once WebM files are created, uncomment the WebM detection code below
 		/*
@@ -36,14 +36,14 @@ export default function VideoLogo({
 			return sourceObj.webm || sourceObj.mp4;
 		}
 		*/
-		
+
 		return sourceObj.mp4;
 	}, []);
 
 	// Simplified preload function - only preload metadata
 	const preloadVideo = useCallback((sourceObj) => {
 		const src = getBestSource(sourceObj);
-		
+
 		if (preloadedVideosRef.current.has(src)) {
 			return preloadedVideosRef.current.get(src);
 		}
@@ -53,24 +53,25 @@ export default function VideoLogo({
 		video.playsInline = true;
 		video.preload = 'metadata'; // Only preload metadata to reduce memory usage
 		video.src = src;
-		
+
 		// Store the preloaded video
 		preloadedVideosRef.current.set(src, video);
-		
+
 		return video;
 	}, [getBestSource]);
 
 	// Preload all videos on mount
 	useEffect(() => {
+		const preloadedVideos = preloadedVideosRef.current;
 		sources.forEach(sourceObj => preloadVideo(sourceObj));
-		
+
 		// Cleanup preloaded videos on unmount
 		return () => {
-			preloadedVideosRef.current.forEach(video => {
+			preloadedVideos.forEach(video => {
 				video.src = '';
 				video.load();
 			});
-			preloadedVideosRef.current.clear();
+			preloadedVideos.clear();
 		};
 	}, [sources, preloadVideo]);
 
@@ -95,11 +96,11 @@ export default function VideoLogo({
 		const nextIndex = (currentIndex + 1) % sources.length;
 		const nextSourceObj = sources[nextIndex];
 		const nextSource = getBestSource(nextSourceObj);
-		
+
 		// Simple source switching without complex preloading checks
 		videoElement.src = nextSource;
 		setCurrentIndex(nextIndex);
-		
+
 		// Use a longer delay for smoother transitions
 		switchTimeoutRef.current = setTimeout(() => {
 			const playPromise = videoElement.play();
@@ -149,14 +150,15 @@ export default function VideoLogo({
 	}, [switchToNextVideo]);
 
 	useEffect(() => {
-		const videoElement = videoRef.current;
-		if (!videoElement) return;
+		// Capture ref values to prevent stale closure warnings in cleanup
+		const preloadedVideos = preloadedVideosRef.current;
+		const currentAnimationFrame = animationFrameRef.current;
 
 		// Initialize with first video
 		const initialSource = getBestSource(sources[0]);
 		videoElement.src = initialSource;
 		videoElement.load();
-		
+
 		// Add event listeners
 		videoElement.addEventListener('ended', handleEnded);
 		videoElement.addEventListener('loadeddata', handleLoadedData);
@@ -164,7 +166,7 @@ export default function VideoLogo({
 		videoElement.addEventListener('pause', handlePause);
 		videoElement.addEventListener('loadstart', handleLoadStart);
 		videoElement.addEventListener('error', handleError);
-		
+
 		// Start playing with better error handling
 		const playPromise = videoElement.play();
 		if (playPromise !== undefined) {
@@ -178,16 +180,23 @@ export default function VideoLogo({
 			if (switchTimeoutRef.current) {
 				clearTimeout(switchTimeoutRef.current);
 			}
-			if (animationFrameRef.current) {
-				cancelAnimationFrame(animationFrameRef.current);
+			if (currentAnimationFrame) {
+				cancelAnimationFrame(currentAnimationFrame);
 			}
-			
+
 			videoElement.removeEventListener('ended', handleEnded);
 			videoElement.removeEventListener('loadeddata', handleLoadedData);
 			videoElement.removeEventListener('play', handlePlay);
 			videoElement.removeEventListener('pause', handlePause);
 			videoElement.removeEventListener('loadstart', handleLoadStart);
 			videoElement.removeEventListener('error', handleError);
+
+			// Use captured ref value for cleanup
+			preloadedVideos.forEach(video => {
+				video.src = '';
+				video.load();
+			});
+			preloadedVideos.clear();
 		};
 	}, [sources, getBestSource, handleEnded, handleLoadedData, handlePlay, handlePause, handleLoadStart, handleError]);
 

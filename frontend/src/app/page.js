@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { TypeAnimation } from 'react-type-animation';
 import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import FuturisticBackground from '../components/FuturisticBackground';
 import Navbar from '../components/Navbar';
 
@@ -664,7 +665,7 @@ export default function Home() {
             >
               <div className="h-full flex flex-col p-8 rounded-2xl bg-[#0A0A0A] border border-white/5 hover:border-white/20 transition-all duration-300 items-center text-center">
                 <div className="w-14 h-14 bg-white/5 rounded-xl flex items-center justify-center mb-6 group-hover:bg-blue-900/10 transition-colors">
-                  <img src="/images/gmail.svg" alt="Gmail" className="w-8 h-8 object-contain opacity-80 group-hover:opacity-100" />
+                  <Image src="/images/gmail.svg" alt="Gmail" width={32} height={32} className="w-8 h-8 object-contain opacity-80 group-hover:opacity-100" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">
                   <span className="text-blue-500">E</span>

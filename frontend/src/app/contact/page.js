@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import Navbar from '../../components/Navbar';
 import { QRCodeSVG } from 'qrcode.react';
+import Image from 'next/image';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -258,7 +259,7 @@ export default function ContactPage() {
                   <h3 className="text-xl font-bold text-blue-400 mb-4">Contact Information</h3>
                   <div className="space-y-4">
                     <div className="flex items-center text-gray-300 gap-3">
-                      <img src="/images/gmail.svg" alt="Gmail" className="w-6 h-6 flex-shrink-0" />
+                      <Image src="/images/gmail.svg" alt="Gmail" width={24} height={24} className="flex-shrink-0" />
                       <a href="mailto:contact@supeai.com" className="hover:text-accent-cyan transition">hello@thesupeai.com</a>
                     </div>
                     <div className="flex items-center text-gray-300 gap-3">
