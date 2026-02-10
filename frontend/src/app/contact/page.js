@@ -107,7 +107,7 @@ export default function ContactPage() {
                 transition={{ duration: 0.6 }}
                 className="inline-block mb-6 px-4 py-2 rounded-full border border-cyan-500/30 bg-cyan-900/10 backdrop-blur-md"
               >
-                <span className="text-sm font-medium text-cyan-300 uppercase tracking-wider">Let's Connect</span>
+                <span className="text-sm font-medium text-cyan-300 uppercase tracking-wider">Let&apos;s Connect</span>
               </motion.div>
 
               <h1 className="text-6xl md:text-8xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-white via-cyan-200 to-blue-400">
@@ -115,7 +115,7 @@ export default function ContactPage() {
               </h1>
 
               <p className="text-xl md:text-2xl text-gray-400 mb-12 max-w-4xl mx-auto leading-relaxed">
-                Ready to transform your business with AI? Let's start a conversation about how we can help you achieve your goals
+                Ready to transform your business with AI? Let&apos;s start a conversation about how we can help you achieve your goals
               </p>
             </motion.div>
           </div>
@@ -280,7 +280,7 @@ export default function ContactPage() {
                 Global Presence
               </h2>
               <p className="text-gray-400 text-lg">
-                We're here to serve you across the globe
+                We&apos;re here to serve you across the globe
               </p>
             </motion.div>
 
@@ -643,7 +643,7 @@ export default function ContactPage() {
                     Message Sent!
                   </h3>
                   <p className="text-gray-300 mb-6">
-                    Thank you for your message! We'll get back to you soon.
+                    Thank you for your message! We&apos;ll get back to you soon.
                   </p>
                   <button
                     onClick={() => setShowSuccessModal(false)}

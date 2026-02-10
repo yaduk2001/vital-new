@@ -125,7 +125,7 @@ export default function ServicesPage() {
               </h1>
 
               <p className="text-xl md:text-2xl text-gray-400 mb-12 max-w-4xl mx-auto leading-relaxed">
-                Comprehensive AI & Blockchain solutions engineered to transform industries and redefine what's possible
+                Comprehensive AI & Blockchain solutions engineered to transform industries and redefine what&apos;s possible
               </p>
 
               <div className="flex flex-col sm:flex-row gap-6 justify-center">
@@ -491,7 +491,7 @@ export default function ServicesPage() {
                 Ready to <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Transform?</span>
               </h2>
               <p className="text-xl text-gray-300 mb-10">
-                Let's build the future together
+                Let&apos;s build the future together
               </p>
               <div className="flex flex-col sm:flex-row gap-6 justify-center">
                 <Link href="/contact" className="btn-primary px-8 py-4 text-lg">

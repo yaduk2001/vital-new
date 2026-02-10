@@ -127,7 +127,7 @@ export default function AboutPage() {
                       </h2>
                     </div>
                     <p className="text-gray-300 text-lg leading-relaxed">
-                      To become the world's most trusted AI partner, pushing the boundaries of what's possible with intelligent systems. We envision a future where AI seamlessly integrates into every aspect of business, creating unprecedented value and sustainable growth for organizations worldwide.
+                      To become the world&apos;s most trusted AI partner, pushing the boundaries of what&apos;s possible with intelligent systems. We envision a future where AI seamlessly integrates into every aspect of business, creating unprecedented value and sustainable growth for organizations worldwide.
                     </p>
                   </div>
                 </TiltCard>
@@ -162,7 +162,7 @@ export default function AboutPage() {
                   <div className="relative z-10">
                     <div className="text-6xl mb-8">💡</div>
                     <blockquote className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent mb-6 leading-tight">
-                      "Innovation is our DNA, Excellence is our Standard"
+                      &quot;Innovation is our DNA, Excellence is our Standard&quot;
                     </blockquote>
                     <p className="text-xl text-gray-400">
                       — Supe AI Team
@@ -266,7 +266,7 @@ export default function AboutPage() {
                 Ready to Join Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-500">Mission?</span>
               </h2>
               <p className="text-xl text-gray-300 mb-10">
-                Let's work together to transform your business with AI
+                Let&apos;s work together to transform your business with AI
               </p>
               <div className="flex flex-col sm:flex-row gap-6 justify-center">
                 <Link href="/test" className="btn-primary px-8 py-4 text-lg">

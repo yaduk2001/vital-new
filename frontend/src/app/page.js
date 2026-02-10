@@ -510,7 +510,7 @@ export default function Home() {
               Get in Touch
             </h2>
             <p className="text-xl text-gray-400">
-              Ready to transform your business? Let's start a conversation about how we can help you achieve your goals.
+              Ready to transform your business? Let&apos;s start a conversation about how we can help you achieve your goals.
             </p>
           </motion.div>
 
