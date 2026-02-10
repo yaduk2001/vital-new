@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import Navbar from '../../components/Navbar';
 import { useEffect, useState } from 'react';
+import LiveBackground from '../../components/LiveBackground';
 import Particles from '../../components/Particles';
 import { FaHandshake, FaChartLine, FaBullhorn, FaBalanceScale, FaLightbulb, FaLeaf, FaAward, FaGlobe, FaRocket } from 'react-icons/fa';
 
@@ -123,8 +124,9 @@ export default function ConsultancyPage() {
         </div>
 
         {/* Enhanced Hero Section */}
-        <section className="relative py-20 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto">
+        <section className="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+          <LiveBackground src="/images/hero-bg-1.webp" opacity={0.5} />
+          <div className="max-w-7xl mx-auto relative z-10">
             <div className="text-center bg-gradient-to-br from-[#0A0F1A]/80 via-[#1A2332]/60 via-[#0F2A1A]/70 to-[#0A0F1A]/80 backdrop-blur-sm rounded-3xl p-12 border border-white/10 shadow-2xl">
               <motion.h1
                 className="text-5xl md:text-7xl font-bold mb-6 glow-text"
@@ -250,8 +252,9 @@ export default function ConsultancyPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-20 lg:py-32 relative z-10">
-          <div className="container mx-auto px-4">
+        <section className="py-20 lg:py-32 relative z-10 overflow-hidden">
+          <LiveBackground src="/images/hand-ai.webp" opacity={0.4} />
+          <div className="container mx-auto px-4 relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}

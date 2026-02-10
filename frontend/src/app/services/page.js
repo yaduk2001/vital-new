@@ -5,567 +5,499 @@ import Link from 'next/link';
 import Navbar from '../../components/Navbar';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import TiltCard from '../../components/TiltCard';
+import MagneticButton from '../../components/MagneticButton';
+import LiveBackground from '../../components/LiveBackground';
+import { FaRocket, FaMobileAlt, FaBrain, FaNetworkWired, FaLink, FaGamepad, FaHeartbeat, FaIndustry, FaBolt } from 'react-icons/fa';
 
 export default function ServicesPage() {
   const industries = [
     {
-      icon: (
-        <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-        </svg>
-      ),
+      icon: <FaLink className="w-12 h-12" />,
+      title: "Blockchain",
+      description: "Secure, transparent decentralized ledgers for supply chain, finance, and identity management.",
+      gradient: "from-cyan-400 to-blue-600",
+      features: ["Smart Contracts", "Immutable Records", "DeFi Integration"],
+      color: "cyan",
+      spotlight: "rgba(34, 211, 238, 0.2)"
+    },
+    {
+      icon: <FaRocket className="w-12 h-12" />,
       title: "Construction",
       description: "AI-powered project management and safety monitoring for construction sites. Optimize workflows and reduce risks with intelligent automation.",
       gradient: "from-orange-500 to-red-500",
       features: ["Safety Monitoring", "Project Management", "Resource Optimization"],
-      color: "orange"
+      color: "orange",
+      spotlight: "rgba(251, 146, 60, 0.2)"
     },
     {
-      icon: (
-        <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-        </svg>
-      ),
+      icon: <FaNetworkWired className="w-12 h-12" />,
       title: "Logistics",
       description: "Smart route optimization and real-time tracking solutions. Streamline supply chains and improve delivery efficiency with predictive analytics.",
       gradient: "from-blue-500 to-cyan-500",
       features: ["Route Optimization", "Real-time Tracking", "Supply Chain Analytics"],
-      color: "blue"
+      color: "blue",
+      spotlight: "rgba(59, 130, 246, 0.2)"
     },
     {
-      icon: (
-        <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-        </svg>
-      ),
+      icon: <FaBrain className="w-12 h-12" />,
       title: "Education",
       description: "Personalized learning experiences and intelligent tutoring systems. Transform education with adaptive AI that enhances student engagement.",
       gradient: "from-purple-500 to-pink-500",
       features: ["Personalized Learning", "Intelligent Tutoring", "Student Analytics"],
-      color: "purple"
+      color: "purple",
+      spotlight: "rgba(168, 85, 247, 0.2)"
     },
     {
-      icon: (
-        <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-        </svg>
-      ),
+      icon: <FaMobileAlt className="w-12 h-12" />,
       title: "Retail",
       description: "Customer behavior analysis and inventory management automation. Boost sales and optimize operations with AI-driven retail insights.",
       gradient: "from-green-500 to-emerald-500",
       features: ["Customer Analytics", "Inventory Management", "Sales Optimization"],
-      color: "green"
+      color: "green",
+      spotlight: "rgba(74, 222, 128, 0.2)"
     },
     {
-      icon: (
-        <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-        </svg>
-      ),
+      icon: <FaGamepad className="w-12 h-12" />,
       title: "Finance",
       description: "Fraud detection and automated financial analysis tools. Secure transactions and make data-driven decisions with intelligent financial AI.",
       gradient: "from-yellow-500 to-orange-500",
       features: ["Fraud Detection", "Financial Analytics", "Risk Assessment"],
-      color: "yellow"
+      color: "yellow",
+      spotlight: "rgba(250, 204, 21, 0.2)"
     },
     {
-      icon: (
-        <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-        </svg>
-      ),
+      icon: <FaHeartbeat className="w-12 h-12" />,
       title: "Healthcare",
-      description: "Medical diagnosis assistance and patient care optimization. Improve healthcare outcomes with AI-powered diagnostic and treatment support.",
-      gradient: "from-red-500 to-pink-500",
-      features: ["Medical Diagnosis", "Patient Care", "Treatment Support"],
-      color: "red"
+      description: "AI-driven diagnostics and patient data management systems. Enhance care delivery standards with predictive health analytics.",
+      gradient: "from-rose-500 to-red-600",
+      features: ["Predictive Diagnostics", "Patient Monitoring", "Medical Imaging"],
+      color: "rose",
+      spotlight: "rgba(244, 63, 94, 0.2)"
     },
     {
-      icon: (
-        <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
-      ),
-      title: "Marketing",
-      description: "Customer segmentation and campaign optimization automation. Drive better ROI with AI-powered marketing analytics and personalization.",
-      gradient: "from-indigo-500 to-purple-500",
-      features: ["Customer Segmentation", "Campaign Optimization", "Marketing Analytics"],
-      color: "indigo"
-    },
-    {
-      icon: (
-        <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-        </svg>
-      ),
+      icon: <FaIndustry className="w-12 h-12" />,
       title: "Manufacturing",
-      description: "Smart factory automation and predictive maintenance solutions. Enhance production efficiency and reduce downtime with AI-driven manufacturing insights.",
-      gradient: "from-teal-500 to-emerald-500",
-      features: ["Predictive Maintenance", "Quality Control", "Process Optimization"],
-      color: "teal"
+      description: "Smart factory automation and predictive maintenance. Optimize production lines and quality control with IoT and machine learning.",
+      gradient: "from-slate-400 to-gray-500",
+      features: ["Predictive Maintenance", "Smart Automation", "Quality Control"],
+      color: "gray",
+      spotlight: "rgba(148, 163, 184, 0.2)"
     },
     {
-      icon: (
-        <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-        </svg>
-      ),
-      title: "Real Estate",
-      description: "Intelligent property valuation and market analysis tools. Make data-driven real estate decisions with AI-powered insights and automated property management.",
-      gradient: "from-rose-500 to-pink-500",
-      features: ["Property Valuation", "Market Analysis", "Smart Property Management"],
-      color: "rose"
-    }
+      icon: <FaBolt className="w-12 h-12" />,
+      title: "Energy",
+      description: "Grid optimization and renewable energy management. Drive sustainability and efficiency with smart grid AI solutions.",
+      gradient: "from-amber-400 to-yellow-500",
+      features: ["Grid Optimization", "Renewable Manage", "Consumption Analytics"],
+      color: "amber",
+      spotlight: "rgba(251, 191, 36, 0.2)"
+    },
   ];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2
-      }
-    }
-  };
-
-  const cardVariants = {
-    hidden: {
-      opacity: 0,
-      y: 50,
-      scale: 0.9
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.6,
-        ease: [0.4, 0.0, 0.2, 1]
-      }
-    }
-  };
-
-  const iconVariants = {
-    hidden: { scale: 0, rotate: -180 },
-    visible: {
-      scale: 1,
-      rotate: 0,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut"
-      }
-    },
-    hover: {
-      scale: 1.1,
-      rotate: 5,
-      transition: {
-        duration: 0.3
-      }
-    }
-  };
-
-
 
   return (
     <>
       <Navbar />
-      <div className={`min-h-screen bg-gradient-to-br from-[#0A0F1A] via-[#1A2332] via-[#0F2A1A] to-[#0A0F1A] relative overflow-hidden`}>
+      <div className="min-h-screen bg-gradient-to-br from-[#0A0F1A] via-[#1A2332] via-[#0F2A1A] to-[#0A0F1A] overflow-hidden relative">
+        <LiveBackground src="/images/hero-bg-1.webp" opacity={0.3} blur="blur-lg" />
 
-        {/* Enhanced Animated Background Particles */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-accent-blue/30 rounded-full animate-float" style={{ animationDelay: '0s', animationDuration: '6s' }}></div>
-          <div className="absolute top-3/4 right-1/3 w-1 h-1 bg-accent-green/40 rounded-full animate-float" style={{ animationDelay: '2s', animationDuration: '8s' }}></div>
-          <div className="absolute top-1/2 left-1/2 w-3 h-3 bg-accent-blueMedium/20 rounded-full animate-float" style={{ animationDelay: '4s', animationDuration: '7s' }}></div>
-          <div className="absolute top-1/3 right-1/4 w-2 h-2 bg-accent-green/30 rounded-full animate-float" style={{ animationDelay: '1s', animationDuration: '9s' }}></div>
-          <div className="absolute bottom-1/4 left-1/3 w-1 h-1 bg-accent-blue/50 rounded-full animate-float" style={{ animationDelay: '3s', animationDuration: '5s' }}></div>
-          <div className="absolute top-2/3 left-1/4 w-2 h-2 bg-accent-green/25 rounded-full animate-float" style={{ animationDelay: '5s', animationDuration: '10s' }}></div>
-          <div className="absolute top-1/4 right-1/2 w-3 h-3 bg-accent-blueLight/30 rounded-full animate-float" style={{ animationDelay: '2.5s', animationDuration: '8.5s' }}></div>
-          <div className="absolute bottom-1/3 right-1/3 w-1 h-1 bg-accent-green/35 rounded-full animate-float" style={{ animationDelay: '1.5s', animationDuration: '7.5s' }}></div>
-        </div>
+        {/* Hero Section */}
+        <section className="relative py-32 px-4 sm:px-6 lg:px-8 mt-20 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none" />
 
-        {/* Enhanced Hero Section */}
-        <section className="relative py-20 px-4 sm:px-6 lg:px-8 mt-20">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center bg-gradient-to-br from-[#0A0F1A]/50 via-[#1A2332]/30 via-[#0F2A1A]/40 to-[#0A0F1A]/50 backdrop-blur-sm rounded-3xl p-12 border border-white/10 shadow-2xl">
-              <motion.h1
-                className="text-5xl md:text-7xl font-bold mb-6"
-                initial={{ opacity: 0, scale: 0.5, filter: "blur(10px)" }}
-                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                transition={{ duration: 0.8 }}
-              >
-                Our <span className="text-gradient-primary">Services</span>
-              </motion.h1>
-              <motion.p
-                className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-              >
-                Comprehensive AI solutions designed to transform your business and drive innovation across all industries.
-              </motion.p>
+          <div className="max-w-7xl mx-auto relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center"
+            >
               <motion.div
-                className="flex flex-col sm:flex-row gap-4 justify-center"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.6 }}
+                className="inline-block mb-6 px-4 py-2 rounded-full border border-cyan-500/30 bg-cyan-900/10 backdrop-blur-md"
               >
-                <button className="btn-primary neon-border px-8 py-4 text-lg font-semibold">
-                  Try Our API
-                </button>
-                <button className="btn-outline mirror-effect px-8 py-4 text-lg font-semibold">
-                  Get Custom Quote
-                </button>
+                <span className="text-sm font-medium text-cyan-300 uppercase tracking-wider">Enterprise Solutions</span>
+              </motion.div>
+
+              <h1 className="text-6xl md:text-8xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-white via-cyan-200 to-blue-400">
+                Our Services
+              </h1>
+
+              <p className="text-xl md:text-2xl text-gray-400 mb-12 max-w-4xl mx-auto leading-relaxed">
+                Comprehensive AI & Blockchain solutions engineered to transform industries and redefine what's possible
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-6 justify-center">
+                <Link href="/contact">
+                  <MagneticButton>
+                    <div className="px-8 py-4 bg-white text-black rounded-lg font-bold text-lg hover:bg-cyan-50 transition-colors shadow-[0_0_30px_rgba(255,255,255,0.3)]">
+                      Get Started
+                    </div>
+                  </MagneticButton>
+                </Link>
+                <Link href="/contact">
+                  <MagneticButton>
+                    <div className="px-8 py-4 bg-black border border-white/20 text-white rounded-lg font-bold text-lg hover:bg-white/10 transition-colors backdrop-blur-md">
+                      Custom Quote
+                    </div>
+                  </MagneticButton>
+                </Link>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Industries Grid */}
+        <section className="relative py-20 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                Industries We Transform
+              </h2>
+              <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+                Delivering cutting-edge solutions across diverse sectors
+              </p>
+            </motion.div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {industries.map((industry, index) => (
+                <motion.div
+                  key={industry.title}
+                  initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                >
+                  <TiltCard spotlight={true} spotlightColor={industry.spotlight} className="h-full">
+                    <div className="h-full flex flex-col p-8 rounded-2xl bg-black/60 backdrop-blur-md border border-white/5 hover:border-white/10 transition-all duration-300 group">
+                      <div className={`mb-6 p-4 rounded-xl bg-white/5 w-fit border border-white/10 text-${industry.color}-400 group-hover:scale-110 transition-transform`}>
+                        {industry.icon}
+                      </div>
+
+                      <h3 className={`text-2xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r ${industry.gradient}`}>
+                        {industry.title}
+                      </h3>
+
+                      <p className="text-gray-400 leading-relaxed mb-6 flex-grow text-sm">
+                        {industry.description}
+                      </p>
+
+                      <div className="flex flex-wrap gap-2 mt-auto">
+                        {industry.features.map((feature, idx) => (
+                          <span key={idx} className="text-[10px] uppercase tracking-wider font-semibold px-2 py-1 rounded bg-white/5 text-gray-300 border border-white/5">
+                            {feature}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </TiltCard>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Core Capabilities */}
+        <section className="relative py-32 px-4 sm:px-6 lg:px-8 overflow-hidden border-t border-white/5">
+          <LiveBackground src="/images/tech-bg-2.webp" opacity={0.2} />
+
+          {/* Floating Background Shapes */}
+          <motion.div
+            animate={{ y: [0, 30, 0], opacity: [0.3, 0.6, 0.3] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-20 right-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[100px] pointer-events-none z-0"
+          />
+          <motion.div
+            animate={{ y: [0, -30, 0], opacity: [0.3, 0.6, 0.3] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            className="absolute bottom-20 left-0 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[100px] pointer-events-none z-0"
+          />
+
+          <div className="max-w-7xl mx-auto relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-20"
+            >
+              <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-600">
+                Core Capabilities
+              </h2>
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                Engineering excellence across the full technology stack
+              </p>
+            </motion.div>
+
+            <div className="space-y-32">
+              {/* Web Platforms */}
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="flex flex-col md:flex-row items-center gap-12"
+              >
+                <div className="flex-1">
+                  <TiltCard spotlight={true} spotlightColor="rgba(59, 130, 246, 0.2)">
+                    <div className="bg-black/80 p-10 rounded-2xl border border-blue-500/20">
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="p-3 rounded-lg bg-blue-900/20 text-blue-400">
+                          <FaRocket className="w-8 h-8" />
+                        </div>
+                        <div>
+                          <h3 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
+                            Web Platforms
+                          </h3>
+                          <p className="text-blue-200 font-mono text-sm">Next-Gen Experience</p>
+                        </div>
+                      </div>
+                      <p className="text-gray-300 leading-relaxed text-lg">
+                        Building immersive, high-performance web applications using cutting-edge frameworks. We deliver speed, SEO-dominance, and responsive beauty that converts.
+                      </p>
+                    </div>
+                  </TiltCard>
+                </div>
+                <div className="w-48 h-48 relative">
+                  <Image
+                    src="/images/web development.webp"
+                    alt="Web Development"
+                    fill
+                    className="object-cover rounded-full border-4 border-blue-500/30 shadow-[0_0_50px_rgba(59,130,246,0.4)]"
+                  />
+                </div>
+              </motion.div>
+
+              {/* Mobile Apps */}
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="flex flex-col md:flex-row-reverse items-center gap-12"
+              >
+                <div className="flex-1">
+                  <TiltCard spotlight={true} spotlightColor="rgba(34, 197, 94, 0.2)">
+                    <div className="bg-black/80 p-10 rounded-2xl border border-green-500/20">
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="p-3 rounded-lg bg-green-900/20 text-green-400">
+                          <FaMobileAlt className="w-8 h-8" />
+                        </div>
+                        <div>
+                          <h3 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-300">
+                            Mobile Applications
+                          </h3>
+                          <p className="text-green-200 font-mono text-sm">iOS & Android</p>
+                        </div>
+                      </div>
+                      <p className="text-gray-300 leading-relaxed text-lg">
+                        Native and cross-platform mobile solutions that feel fluid and intuitive. From consumer apps to enterprise mobility instruments.
+                      </p>
+                    </div>
+                  </TiltCard>
+                </div>
+                <div className="w-48 h-48 relative">
+                  <Image
+                    src="/images/app dev.webp"
+                    alt="Mobile Development"
+                    fill
+                    className="object-cover rounded-full border-4 border-green-500/30 shadow-[0_0_50px_rgba(34,197,94,0.4)]"
+                  />
+                </div>
+              </motion.div>
+
+              {/* AI */}
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="flex flex-col md:flex-row items-center gap-12"
+              >
+                <div className="flex-1">
+                  <TiltCard spotlight={true} spotlightColor="rgba(168, 85, 247, 0.2)">
+                    <div className="bg-black/80 p-10 rounded-2xl border border-purple-500/20">
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="p-3 rounded-lg bg-purple-900/20 text-purple-400">
+                          <FaBrain className="w-8 h-8" />
+                        </div>
+                        <div>
+                          <h3 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-300">
+                            Artificial Intelligence
+                          </h3>
+                          <p className="text-purple-200 font-mono text-sm">The Core Brain</p>
+                        </div>
+                      </div>
+                      <p className="text-gray-300 leading-relaxed text-lg">
+                        Deploying LLMs, computer vision, and predictive analytics. We integrate intelligence into every layer of your digital ecosystem.
+                      </p>
+                    </div>
+                  </TiltCard>
+                </div>
+                <div className="w-48 h-48 relative">
+                  <Image
+                    src="/images/AI.webp"
+                    alt="Artificial Intelligence"
+                    fill
+                    className="object-cover rounded-full border-4 border-purple-500/30 shadow-[0_0_50px_rgba(168,85,247,0.4)]"
+                  />
+                </div>
+              </motion.div>
+
+              {/* Blockchain - BOOSTED */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                className="relative"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-cyan-500/10 rounded-3xl blur-3xl" />
+                <TiltCard spotlight={true} spotlightColor="rgba(6, 182, 212, 0.3)" className="relative">
+                  <div className="bg-black/90 p-12 rounded-3xl border-2 border-cyan-500/30 shadow-[0_0_80px_rgba(6,182,212,0.2)]">
+                    <div className="flex flex-col md:flex-row items-center gap-12">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-4 mb-8">
+                          <div className="p-4 rounded-xl bg-cyan-900/30 text-cyan-400 border border-cyan-500/30">
+                            <FaLink className="w-10 h-10" />
+                          </div>
+                          <div>
+                            <h3 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-teal-300">
+                              BLOCKCHAIN & WEB3
+                            </h3>
+                            <p className="text-cyan-200 font-mono text-lg tracking-wider">Decentralized Infrastructure</p>
+                          </div>
+                        </div>
+
+                        <p className="text-gray-200 leading-relaxed text-lg mb-8">
+                          We engineer trustless enterprise ecosystems. From <strong className="text-cyan-300">Smart Contracts</strong> and <strong className="text-cyan-300">DeFi protocols</strong> to <strong className="text-cyan-300">Immutable Ledgers</strong> and <strong className="text-cyan-300">Tokenization</strong>, we empower your business to operate with mathematical certainty and absolute transparency.
+                        </p>
+
+                        <div className="flex flex-wrap gap-3">
+                          {['Smart Contracts', 'DeFi', 'NFTs', 'L2 Scaling', 'Audits', 'DAOs'].map((tag, i) => (
+                            <span key={i} className="px-4 py-2 rounded-lg bg-cyan-900/30 border border-cyan-500/30 text-cyan-300 text-sm font-mono hover:bg-cyan-800/50 transition-colors">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="w-64 h-64 relative flex-shrink-0">
+                        <Image
+                          src="/images/blockchain.webp"
+                          alt="Blockchain"
+                          fill
+                          className="object-cover rounded-2xl border-4 border-cyan-500/50 shadow-[0_0_60px_rgba(34,211,238,0.6)]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </TiltCard>
               </motion.div>
             </div>
           </div>
         </section>
 
-        {/* Services Grid */}
-        <section className="relative py-20 px-4 sm:px-6 lg:px-8">
+        {/* Blockchain Protocols */}
+        <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-black/40 border-t border-white/5">
           <div className="max-w-7xl mx-auto">
-            <div className="bg-gradient-to-br from-[#0A0F1A]/30 via-[#1A2332]/20 via-[#0F2A1A]/25 to-[#0A0F1A]/30 rounded-3xl p-8 border border-white/10">
-              <motion.div
-                className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
-              >
-                {industries.map((industry, index) => (
-                  <motion.div
-                    key={industry.title}
-                    className="h-full flex flex-col p-8 rounded-2xl bg-[#0A0A0A] border border-white/5 hover:border-white/20 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden"
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                  >
-                    <div className="relative z-10 flex flex-col h-full">
-                      <div className={`mb-6 p-4 rounded-xl bg-white/5 w-fit border border-white/10 group-hover:border-white/20 transition-colors text-${industry.color}-400`}>
-                        {industry.icon}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+                Blockchain Protocols & Standards
+              </h2>
+              <p className="text-gray-400 max-w-2xl mx-auto">
+                Expertise across the entire distributed ledger ecosystem
+              </p>
+            </motion.div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                {
+                  title: 'Public Chains',
+                  items: ['Ethereum', 'Solana', 'Bitcoin', 'Cardano'],
+                  image: '/images/blockchain/ethereum.png',
+                  color: 'cyan'
+                },
+                {
+                  title: 'Enterprise & Private',
+                  items: ['Hyperledger Fabric', 'R3 Corda', 'Quorum'],
+                  image: '/images/blockchain.webp',
+                  color: 'blue'
+                },
+                {
+                  title: 'Layer 2 Scaling',
+                  items: ['Polygon', 'Arbitrum', 'Optimism', 'zkSync'],
+                  image: '/images/blockchain/layer2.png',
+                  color: 'purple'
+                },
+                {
+                  title: 'Development Tech',
+                  items: ['Solidity', 'Rust', 'Web3.js', 'IPFS'],
+                  image: '/images/digital_ecosystem.webp',
+                  color: 'green'
+                }
+              ].map((category, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  viewport={{ once: true }}
+                >
+                  <TiltCard spotlight={true} spotlightColor="rgba(255, 255, 255, 0.1)" className="h-full">
+                    <div className="h-full p-6 rounded-xl bg-black/60 border border-white/5 hover:border-cyan-500/30 transition-all group backdrop-blur-sm">
+                      <div className="mb-6 h-16 w-16 relative">
+                        <Image
+                          src={category.image}
+                          alt={category.title}
+                          fill
+                          className="object-contain"
+                        />
                       </div>
-                      <h3 className={`text-xl font-bold mb-3 bg-gradient-to-r ${industry.gradient} bg-clip-text text-transparent`}>
-                        {industry.title}
-                      </h3>
-                      <p className="text-gray-400 leading-relaxed mb-6 flex-grow">
-                        {industry.description}
-                      </p>
-                      <ul className="space-y-2 mt-auto">
-                        {industry.features.map((feature, idx) => (
-                          <li key={idx} className="flex items-center text-sm text-gray-500 group-hover:text-gray-400 transition-colors">
-                            <span className={`w-1.5 h-1.5 rounded-full bg-${industry.color}-500 mr-2`}></span>
-                            {feature}
+                      <h3 className="text-xl font-bold text-white mb-4 group-hover:text-cyan-400 transition-colors">{category.title}</h3>
+                      <ul className="space-y-2">
+                        {category.items.map((item, i) => (
+                          <li key={i} className="flex items-center text-gray-400 text-sm">
+                            <span className="w-1.5 h-1.5 bg-cyan-500 rounded-full mr-2" />
+                            {item}
                           </li>
                         ))}
                       </ul>
                     </div>
-                  </motion.div>
-                ))}
-              </motion.div>
+                  </TiltCard>
+                </motion.div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* Feature Zones Section (Zig-Zag Layout) */}
-        <section className="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
-          <div className="max-w-7xl mx-auto">
-            <motion.div
-              className="text-center mb-24"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-            >
-              <motion.h2
-                className="text-4xl md:text-6xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-500 to-amber-600 drop-shadow-sm"
-                initial={{ opacity: 0, x: -100, filter: "blur(10px)" }}
-                whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-                transition={{ duration: 0.8 }}
-              >
-                Why Choose Supe AI?
-              </motion.h2>
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                Engineering Powerhouse. We integrate intelligence into every layer of your digital ecosystem.
-              </p>
-            </motion.div>
-
-            <div className="relative mt-20">
-              {/* Central Line */}
-              <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-0.5 bg-gradient-to-b from-blue-500 via-purple-500 to-orange-500 opacity-30 hidden md:block"></div>
-
-              <div className="space-y-24">
-                {/* Feature 1: Web Platforms */}
-                {/* Feature 1: Web Platforms */}
-                <div
-                  className="flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-visible"
-                >
-                  <motion.div
-                    initial={{ opacity: 0, x: -100 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
-                    viewport={{ once: false, margin: "-100px" }}
-                    className="w-full md:w-5/12 text-center md:text-right order-2 md:order-1 bg-black/80 p-6 rounded-xl border border-blue-500/20"
-                  >
-                    <h3 className="text-3xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
-                      WEB PLATFORMS
-                    </h3>
-                    <h4 className="text-lg text-blue-200 mb-4 font-mono">Next-Gen Experience</h4>
-                    <p className="text-gray-400 leading-relaxed">
-                      Building immersive, high-performance web applications using cutting-edge frameworks. We deliver speed, SEO-dominance, and responsive beauty.
-                    </p>
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    viewport={{ once: false, margin: "-100px" }}
-                    className="order-1 md:order-2 z-10 w-24 h-24 rounded-full border-2 border-blue-500/30 shadow-[0_0_30px_rgba(59,130,246,0.4)] overflow-hidden relative bg-[#0A0F1A]"
-                  >
-                    <Image
-                      src="/images/web development.webp"
-                      alt="Web Platforms"
-                      width={96}
-                      height={96}
-                      className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
-                    />
-                  </motion.div>
-
-                  <div className="w-full md:w-5/12 order-3 hidden md:block"></div>
-                </div>
-
-                {/* Feature 2: Mobile Applications */}
-                {/* Feature 2: Mobile Applications */}
-                <div
-                  className="flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-visible"
-                >
-                  <div className="w-full md:w-5/12 order-3 md:order-1 hidden md:block"></div>
-
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    viewport={{ once: false, margin: "-100px" }}
-                    className="order-1 md:order-2 z-10 w-24 h-24 rounded-full border-2 border-green-500/30 shadow-[0_0_30px_rgba(34,197,94,0.4)] overflow-hidden relative bg-[#0A0F1A]"
-                  >
-                    <Image
-                      src="/images/app dev.webp"
-                      alt="Mobile Applications"
-                      width={96}
-                      height={96}
-                      className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
-                    />
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ opacity: 0, x: 100 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
-                    viewport={{ once: false, margin: "-100px" }}
-                    className="w-full md:w-5/12 text-center md:text-left order-2 md:order-3 bg-black/80 p-6 rounded-xl border border-green-500/20"
-                  >
-                    <h3 className="text-3xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-300">
-                      MOBILE APPLICATIONS
-                    </h3>
-                    <h4 className="text-lg text-green-200 mb-4 font-mono">iOS & Android</h4>
-                    <p className="text-gray-400 leading-relaxed">
-                      Native and cross-platform mobile solutions that feel fluid and intuitive. From consumer apps to enterprise mobility instruments.
-                    </p>
-                  </motion.div>
-                </div>
-
-                {/* Feature 3: AI */}
-                {/* Feature 3: AI */}
-                <div
-                  className="flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-visible"
-                >
-                  <motion.div
-                    initial={{ opacity: 0, x: -100 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
-                    viewport={{ once: false, margin: "-100px" }}
-                    className="w-full md:w-5/12 text-center md:text-right order-2 md:order-1 bg-black/80 p-6 rounded-xl border border-purple-500/20"
-                  >
-                    <h3 className="text-3xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-300">
-                      ARTIFICIAL INTELLIGENCE
-                    </h3>
-                    <h4 className="text-lg text-purple-200 mb-4 font-mono">The Core Brain</h4>
-                    <p className="text-gray-400 leading-relaxed">
-                      Deploying LLMs, computer vision, and predictive analytics. We integrate intelligence into every layer of your digital ecosystem.
-                    </p>
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    viewport={{ once: false, margin: "-100px" }}
-                    className="order-1 md:order-2 z-10 w-24 h-24 rounded-full border-2 border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.4)] overflow-hidden relative bg-[#0A0F1A]"
-                  >
-                    <Image
-                      src="/images/AI.webp"
-                      alt="Artificial Intelligence"
-                      width={96}
-                      height={96}
-                      className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
-                    />
-                  </motion.div>
-
-                  <div className="w-full md:w-5/12 order-3 hidden md:block"></div>
-                </div>
-
-                {/* Feature 4: Ecosystems */}
-                {/* Feature 4: Ecosystems */}
-                <div
-                  className="flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-visible"
-                >
-                  <div className="w-full md:w-5/12 order-3 md:order-1 hidden md:block"></div>
-
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    viewport={{ once: false, margin: "-100px" }}
-                    className="order-1 md:order-2 z-10 w-24 h-24 rounded-full border-2 border-orange-500/30 shadow-[0_0_30px_rgba(249,115,22,0.4)] overflow-hidden relative bg-[#0A0F1A]"
-                  >
-                    <Image
-                      src="/images/digital ecosystem.webp"
-                      alt="Digital Ecosystems"
-                      width={96}
-                      height={96}
-                      className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
-                    />
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ opacity: 0, x: 100 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
-                    viewport={{ once: false, margin: "-100px" }}
-                    className="w-full md:w-5/12 text-center md:text-left order-2 md:order-3 bg-black/80 p-6 rounded-xl border border-orange-500/20"
-                  >
-                    <h3 className="text-3xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-300">
-                      DIGITAL ECOSYSTEMS
-                    </h3>
-                    <h4 className="text-lg text-orange-200 mb-4 font-mono">Complete Integration</h4>
-                    <p className="text-gray-400 leading-relaxed">
-                      Connecting IoT, Cloud, and Blockchain into a unified powerhouse. We architect scalable systems for the future of enterprise.
-                    </p>
-                  </motion.div>
-                </div>
-
-                {/* Feature 5: Blockchain Solutions */}
-                {/* Feature 5: Blockchain Solutions */}
-                <div
-                  className="flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-visible"
-                >
-                  <motion.div
-                    initial={{ opacity: 0, x: -100 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
-                    viewport={{ once: false, margin: "-100px" }}
-                    className="w-full md:w-5/12 text-center md:text-right order-2 md:order-1 bg-black/80 p-6 rounded-xl border border-cyan-500/20"
-                  >
-                    <h3 className="text-3xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-300">
-                      BLOCKCHAIN SOLUTIONS
-                    </h3>
-                    <h4 className="text-lg text-cyan-200 mb-4 font-mono">Decentralized Trust</h4>
-                    <p className="text-gray-400 leading-relaxed">
-                      Secure, transparent, and immutable ledger technologies. We build smart contracts, DeFi platforms, and enterprise blockchain solutions that redefine trust.
-                    </p>
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    viewport={{ once: false, margin: "-100px" }}
-                    className="order-1 md:order-2 z-10 w-24 h-24 rounded-full border-2 border-cyan-500/30 shadow-[0_0_30px_rgba(34,211,238,0.4)] overflow-hidden relative bg-[#0A0F1A]"
-                  >
-                    <Image
-                      src="/images/blockchain.webp"
-                      alt="Blockchain Solutions"
-                      width={96}
-                      height={96}
-                      className="w-full h-full object-cover transform scale-150 translate-x-5 hover:scale-175 transition-transform duration-500"
-                    />
-                  </motion.div>
-
-                  <div className="w-full md:w-5/12 order-3 hidden md:block"></div>
-                </div>
-
-                {/* Feature 6: Game Development */}
-                {/* Feature 6: Game Development */}
-                <div
-                  className="flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-visible"
-                >
-                  <div className="w-full md:w-5/12 order-3 md:order-1 hidden md:block"></div>
-
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    viewport={{ once: false, margin: "-100px" }}
-                    className="order-1 md:order-2 z-10 w-24 h-24 rounded-full border-2 border-red-500/30 shadow-[0_0_30px_rgba(248,113,113,0.4)] overflow-hidden relative bg-[#0A0F1A]"
-                  >
-                    <Image
-                      src="/images/game development.webp"
-                      alt="Game Development"
-                      width={96}
-                      height={96}
-                      className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
-                    />
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ opacity: 0, x: 100 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
-                    viewport={{ once: false, margin: "-100px" }}
-                    className="w-full md:w-5/12 text-center md:text-left order-2 md:order-3 bg-black/80 p-6 rounded-xl border border-red-500/20"
-                  >
-                    <h3 className="text-3xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-rose-300">
-                      GAME DEVELOPMENT
-                    </h3>
-                    <h4 className="text-lg text-red-200 mb-4 font-mono">Immersive Worlds</h4>
-                    <p className="text-gray-400 leading-relaxed">
-                      Creating captivating gaming experiences with Unreal Engine and Unity. From high-fidelity 3D environments to addictive mobile games, we bring imagination to life.
-                    </p>
-                  </motion.div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="py-20 lg:py-32">
-          <div className="container mx-auto px-4">
+        {/* CTA */}
+        <section className="py-32 relative overflow-hidden">
+          <LiveBackground src="/images/hand-ai.webp" opacity={0.3} />
+          <div className="container mx-auto px-4 relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="text-center max-w-4xl mx-auto bg-[#050505] rounded-3xl p-12 border border-white/20 shadow-2xl relative overflow-hidden"
+              className="text-center max-w-4xl mx-auto bg-black/50 backdrop-blur-xl rounded-[2rem] p-16 border border-white/10 shadow-2xl"
             >
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-                Ready to Transform Your Industry?
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                Ready to <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Transform?</span>
               </h2>
-              <p className="text-lg text-gray-300 mb-8">
-                Let&#39;s discuss how our AI solutions can drive innovation and growth for your business
+              <p className="text-xl text-gray-300 mb-10">
+                Let's build the future together
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link
-                  href="/contact"
-                  className="btn-primary"
-                >
+              <div className="flex flex-col sm:flex-row gap-6 justify-center">
+                <Link href="/contact" className="btn-primary px-8 py-4 text-lg">
                   Start Free Trial
                 </Link>
-                <Link
-                  href="/contact"
-                  className="btn-outline"
-                >
+                <Link href="/contact" className="btn-outline px-8 py-4 text-lg bg-black/50 backdrop-blur-md">
                   Schedule Demo
                 </Link>
               </div>
@@ -574,9 +506,9 @@ export default function ServicesPage() {
         </section>
 
         {/* Footer */}
-        <footer className="py-12 border-t border-white/10">
-          <div className="container mx-auto px-4 text-center">
-            <p className="text-gray-400">
+        <footer className="py-12 border-t border-white/10 bg-black text-center">
+          <div className="container mx-auto px-4">
+            <p className="text-gray-500 text-sm">
               © 2024 Supe AI. All rights reserved.
             </p>
           </div>
@@ -584,4 +516,4 @@ export default function ServicesPage() {
       </div>
     </>
   );
-} 
+}
