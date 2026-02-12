@@ -327,7 +327,7 @@ export default function ContactPage() {
                       <img src="https://flagcdn.com/in.svg" alt="India Flag" className="h-8 w-auto object-contain drop-shadow-[0_0_10px_rgba(249,115,22,0.3)]" />
                     </div>
                     <h3 className="text-lg font-bold mb-2">
-                      <span className="text-orange-400">India</span> <span className="text-green-400">Office</span>
+                      <span className="text-orange-400">India</span> <span className="text-green-400"></span>
                     </h3>
                     <a href="tel:+918075851517" className="text-gray-400 hover:text-white transition-colors text-sm">
                       +91 8075851517
@@ -349,7 +349,7 @@ export default function ContactPage() {
                       <img src="https://flagcdn.com/gb.svg" alt="UK Flag" className="h-8 w-auto object-contain drop-shadow-[0_0_10px_rgba(239,68,68,0.3)]" />
                     </div>
                     <h3 className="text-lg font-bold mb-2">
-                      <span className="text-red-400">UK</span> <span className="text-blue-400">Office</span>
+                      <span className="text-red-400">UK</span> <span className="text-blue-400"></span>
                     </h3>
                     <a href="tel:+447404465149" className="text-gray-400 hover:text-white transition-colors text-sm">
                       +44 7404 465149
@@ -371,7 +371,7 @@ export default function ContactPage() {
                       <img src="https://flagcdn.com/au.svg" alt="Australia Flag" className="h-8 w-auto object-contain drop-shadow-[0_0_10px_rgba(59,130,246,0.3)]" />
                     </div>
                     <h3 className="text-lg font-bold mb-2">
-                      <span className="text-blue-400">Australia</span> <span className="text-red-400">Office</span>
+                      <span className="text-blue-400">Australia</span> <span className="text-red-400"></span>
                     </h3>
                     <a href="tel:+61468371679" className="text-gray-400 hover:text-white transition-colors text-sm">
                       +61 468 371679
@@ -393,7 +393,7 @@ export default function ContactPage() {
                       <img src="https://flagcdn.com/ae.svg" alt="UAE Flag" className="h-8 w-auto object-contain drop-shadow-[0_0_10px_rgba(34,197,94,0.3)]" />
                     </div>
                     <h3 className="text-lg font-bold mb-2">
-                      <span className="text-red-400">Dubai</span> <span className="text-green-400">Office</span>
+                      <span className="text-red-400">Dubai</span> <span className="text-green-400"></span>
                     </h3>
                     <a href="tel:+971569779819" className="text-gray-400 hover:text-white transition-colors text-sm">
                       +971 56 977 9819
@@ -415,7 +415,7 @@ export default function ContactPage() {
                       <img src="https://flagcdn.com/de.svg" alt="Germany Flag" className="h-8 w-auto object-contain drop-shadow-[0_0_10px_rgba(234,179,8,0.3)]" />
                     </div>
                     <h3 className="text-lg font-bold mb-2">
-                      <span className="text-yellow-400">Germany</span> <span className="text-red-400">Office</span>
+                      <span className="text-yellow-400">Germany</span> <span className="text-red-400"></span>
                     </h3>
                     <a href="tel:+4917632420097" className="text-gray-400 hover:text-white transition-colors text-sm">
                       +49 176 32420097
@@ -452,32 +452,13 @@ export default function ContactPage() {
                   ></iframe>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 flex flex-col justify-end pointer-events-none">
                     <h3 className="text-xl font-bold mb-1">
-                      <span className="text-orange-400">Kochi</span> <span className="text-green-400">Office</span>
+                      <span className="text-orange-400">Kochi</span> <span className="text-green-400"></span>
                     </h3>
                     <p className="text-gray-300 text-xs truncate">Edappally, Kochi, Kerala, India</p>
                   </div>
                 </div>
 
-                {/* London Map */}
-                <div className="w-full md:w-[calc(50%-12px)] lg:w-[calc(33.33%-16px)] h-64 rounded-2xl overflow-hidden relative group border border-white/10 shadow-lg">
-                  <iframe
-                    width="100%"
-                    height="100%"
-                    src={`https://maps.google.com/maps?q=E16%203RU,%20London,%20UK&t=&z=13&ie=UTF8&iwloc=&output=embed`}
-                    frameBorder="0"
-                    scrolling="no"
-                    marginHeight="0"
-                    marginWidth="0"
-                    className="absolute inset-0 grayscale group-hover:grayscale-0 transition-all duration-500 opacity-60 group-hover:opacity-100"
-                    title="London Office Map"
-                  ></iframe>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 flex flex-col justify-end pointer-events-none">
-                    <h3 className="text-xl font-bold mb-1">
-                      <span className="text-red-400">London</span> <span className="text-blue-400">Office</span>
-                    </h3>
-                    <p className="text-gray-300 text-xs truncate">E16 3RU, London, UK</p>
-                  </div>
-                </div>
+
 
                 {/* Sydney Map */}
                 <div className="w-full md:w-[calc(50%-12px)] lg:w-[calc(33.33%-16px)] h-64 rounded-2xl overflow-hidden relative group border border-white/10 shadow-lg">
@@ -494,7 +475,7 @@ export default function ContactPage() {
                   ></iframe>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 flex flex-col justify-end pointer-events-none">
                     <h3 className="text-xl font-bold mb-1">
-                      <span className="text-blue-400">Sydney</span> <span className="text-red-400">Office</span>
+                      <span className="text-blue-400">Sydney</span> <span className="text-red-400"></span>
                     </h3>
                     <p className="text-gray-300 text-xs truncate">1/8 Arthur St, Ryde NSW 2112</p>
                   </div>
@@ -515,7 +496,7 @@ export default function ContactPage() {
                   ></iframe>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 flex flex-col justify-end pointer-events-none">
                     <h3 className="text-xl font-bold mb-1">
-                      <span className="text-red-400">Dubai</span> <span className="text-green-400">Office</span>
+                      <span className="text-red-400">Dubai</span> <span className="text-green-400"></span>
                     </h3>
                     <p className="text-gray-300 text-xs truncate">Silicon Oasis Pineapple Tower, Dubai</p>
                   </div>
@@ -536,7 +517,7 @@ export default function ContactPage() {
                   ></iframe>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 flex flex-col justify-end pointer-events-none">
                     <h3 className="text-xl font-bold mb-1">
-                      <span className="text-yellow-400">Germany</span> <span className="text-red-400">Office</span>
+                      <span className="text-yellow-400">Germany</span> <span className="text-red-400"></span>
                     </h3>
                     <p className="text-gray-300 text-xs truncate">Hegaustraße 54, 78239 Rielasingen-Worblingen</p>
                   </div>

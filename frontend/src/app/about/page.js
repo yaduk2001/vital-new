@@ -162,7 +162,7 @@ export default function AboutPage() {
                   <div className="relative z-10">
                     <div className="text-6xl mb-8">💡</div>
                     <blockquote className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent mb-6 leading-tight">
-                      &quot;Innovation is our DNA, Excellence is our Standard&quot;
+                      &quot;Built up with intent. Scaled with the precision&quot;
                     </blockquote>
                     <p className="text-xl text-gray-400">
                       — Supe AI Team

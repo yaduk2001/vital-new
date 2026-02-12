@@ -19,7 +19,9 @@ export default function ServicesPage() {
       gradient: "from-cyan-400 to-blue-600",
       features: ["Smart Contracts", "Immutable Records", "DeFi Integration"],
       color: "cyan",
-      spotlight: "rgba(34, 211, 238, 0.2)"
+      spotlight: "rgba(34, 211, 238, 0.2)",
+      videoSrc: "https://media.giphy.com/media/xT9IgzoKnwFNmISR8I/giphy.mp4",
+      videoFilter: "hue-rotate(0deg)"
     },
     {
       icon: <FaRocket className="w-12 h-12" />,
@@ -28,7 +30,9 @@ export default function ServicesPage() {
       gradient: "from-orange-500 to-red-500",
       features: ["Safety Monitoring", "Project Management", "Resource Optimization"],
       color: "orange",
-      spotlight: "rgba(251, 146, 60, 0.2)"
+      spotlight: "rgba(251, 146, 60, 0.2)",
+      videoSrc: "https://media.giphy.com/media/l46Cy1rDwQyMsyht6/giphy.mp4",
+      videoFilter: "hue-rotate(180deg) brightness(1.2)"
     },
     {
       icon: <FaNetworkWired className="w-12 h-12" />,
@@ -37,7 +41,9 @@ export default function ServicesPage() {
       gradient: "from-blue-500 to-cyan-500",
       features: ["Route Optimization", "Real-time Tracking", "Supply Chain Analytics"],
       color: "blue",
-      spotlight: "rgba(59, 130, 246, 0.2)"
+      spotlight: "rgba(59, 130, 246, 0.2)",
+      videoSrc: "https://media.giphy.com/media/xT9IgzoKnwFNmISR8I/giphy.mp4",
+      videoFilter: "hue-rotate(20deg)"
     },
     {
       icon: <FaBrain className="w-12 h-12" />,
@@ -46,7 +52,9 @@ export default function ServicesPage() {
       gradient: "from-purple-500 to-pink-500",
       features: ["Personalized Learning", "Intelligent Tutoring", "Student Analytics"],
       color: "purple",
-      spotlight: "rgba(168, 85, 247, 0.2)"
+      spotlight: "rgba(168, 85, 247, 0.2)",
+      videoSrc: "https://media.giphy.com/media/l46Cy1rDwQyMsyht6/giphy.mp4",
+      videoFilter: "hue-rotate(260deg)"
     },
     {
       icon: <FaMobileAlt className="w-12 h-12" />,
@@ -55,7 +63,9 @@ export default function ServicesPage() {
       gradient: "from-green-500 to-emerald-500",
       features: ["Customer Analytics", "Inventory Management", "Sales Optimization"],
       color: "green",
-      spotlight: "rgba(74, 222, 128, 0.2)"
+      spotlight: "rgba(74, 222, 128, 0.2)",
+      videoSrc: "https://media.giphy.com/media/xT9IgzoKnwFNmISR8I/giphy.mp4",
+      videoFilter: "hue-rotate(120deg)"
     },
     {
       icon: <FaGamepad className="w-12 h-12" />,
@@ -64,7 +74,9 @@ export default function ServicesPage() {
       gradient: "from-yellow-500 to-orange-500",
       features: ["Fraud Detection", "Financial Analytics", "Risk Assessment"],
       color: "yellow",
-      spotlight: "rgba(250, 204, 21, 0.2)"
+      spotlight: "rgba(250, 204, 21, 0.2)",
+      videoSrc: "https://media.giphy.com/media/l46Cy1rDwQyMsyht6/giphy.mp4",
+      videoFilter: "hue-rotate(60deg) brightness(1.1)"
     },
     {
       icon: <FaHeartbeat className="w-12 h-12" />,
@@ -73,7 +85,9 @@ export default function ServicesPage() {
       gradient: "from-rose-500 to-red-600",
       features: ["Predictive Diagnostics", "Patient Monitoring", "Medical Imaging"],
       color: "rose",
-      spotlight: "rgba(244, 63, 94, 0.2)"
+      spotlight: "rgba(244, 63, 94, 0.2)",
+      videoSrc: "https://media.giphy.com/media/xT9IgzoKnwFNmISR8I/giphy.mp4",
+      videoFilter: "hue-rotate(320deg)"
     },
     {
       icon: <FaIndustry className="w-12 h-12" />,
@@ -82,7 +96,9 @@ export default function ServicesPage() {
       gradient: "from-slate-400 to-gray-500",
       features: ["Predictive Maintenance", "Smart Automation", "Quality Control"],
       color: "gray",
-      spotlight: "rgba(148, 163, 184, 0.2)"
+      spotlight: "rgba(148, 163, 184, 0.2)",
+      videoSrc: "https://media.giphy.com/media/l46Cy1rDwQyMsyht6/giphy.mp4",
+      videoFilter: "grayscale(100%) brightness(0.8)"
     },
     {
       icon: <FaBolt className="w-12 h-12" />,
@@ -91,7 +107,9 @@ export default function ServicesPage() {
       gradient: "from-amber-400 to-yellow-500",
       features: ["Grid Optimization", "Renewable Manage", "Consumption Analytics"],
       color: "amber",
-      spotlight: "rgba(251, 191, 36, 0.2)"
+      spotlight: "rgba(251, 191, 36, 0.2)",
+      videoSrc: "https://media.giphy.com/media/xT9IgzoKnwFNmISR8I/giphy.mp4",
+      videoFilter: "hue-rotate(40deg)"
     },
   ];
 
@@ -171,29 +189,38 @@ export default function ServicesPage() {
                   key={industry.title}
                   initial={{ opacity: 0, y: 50, scale: 0.9 }}
                   whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   viewport={{ once: true }}
                 >
                   <TiltCard spotlight={true} spotlightColor={industry.spotlight} className="h-full">
-                    <div className="h-full flex flex-col p-8 rounded-2xl bg-black/60 backdrop-blur-md border border-white/5 hover:border-white/10 transition-all duration-300 group">
-                      <div className={`mb-6 p-4 rounded-xl bg-white/5 w-fit border border-white/10 text-${industry.color}-400 group-hover:scale-110 transition-transform`}>
-                        {industry.icon}
+                    <div className="h-full flex flex-col p-8 rounded-2xl bg-black/60 backdrop-blur-md border border-white/5 hover:border-white/20 transition-all duration-300 group relative overflow-hidden">
+                      {/* Video Background */}
+                      <div className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-500" style={{ filter: industry.videoFilter }}>
+                        <LiveBackground videoSrc={industry.videoSrc} opacity={1} blur="blur-0" />
                       </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent z-0" />
 
-                      <h3 className={`text-2xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r ${industry.gradient}`}>
-                        {industry.title}
-                      </h3>
+                      <div className="relative z-10 flex flex-col h-full">
+                        <div className={`mb-6 p-4 rounded-xl bg-white/10 w-fit border border-white/20 text-${industry.color}-400 group-hover:scale-110 transition-transform backdrop-blur-md shadow-lg`}>
+                          {industry.icon}
+                        </div>
 
-                      <p className="text-gray-400 leading-relaxed mb-6 flex-grow text-sm">
-                        {industry.description}
-                      </p>
+                        <h3 className={`text-2xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r ${industry.gradient}`}>
+                          {industry.title}
+                        </h3>
 
-                      <div className="flex flex-wrap gap-2 mt-auto">
-                        {industry.features.map((feature, idx) => (
-                          <span key={idx} className="text-[10px] uppercase tracking-wider font-semibold px-2 py-1 rounded bg-white/5 text-gray-300 border border-white/5">
-                            {feature}
-                          </span>
-                        ))}
+                        <p className="text-gray-300 leading-relaxed mb-6 flex-grow text-sm font-medium drop-shadow-md">
+                          {industry.description}
+                        </p>
+
+                        <div className="flex flex-wrap gap-2 mt-auto">
+                          {industry.features.map((feature, idx) => (
+                            <span key={idx} className="text-[10px] uppercase tracking-wider font-bold px-2 py-1 rounded bg-black/50 text-white/90 border border-white/10 backdrop-blur-sm shadow-sm">
+                              {feature}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </TiltCard>

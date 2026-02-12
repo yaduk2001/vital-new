@@ -68,7 +68,7 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            {['About', 'Services', 'Contact', 'Chat'].map((item, index) => (
+            {['About', 'Services', 'Careers', 'Announcements', 'Contact', 'Chat'].map((item, index) => (
               <NavItem key={item} item={item} index={index} />
             ))}
           </nav>
@@ -116,7 +116,7 @@ export default function Navbar() {
             className="md:hidden fixed inset-0 top-0 left-0 bg-black/95 backdrop-blur-3xl z-40 flex flex-col pt-24 px-6"
           >
             <div className="flex flex-col space-y-6">
-              {['About', 'Services', 'Contact', 'Chat'].map((item, index) => (
+              {['About', 'Services', 'Careers', 'Announcements', 'Contact', 'Chat'].map((item, index) => (
                 <MobileNavItem
                   key={item}
                   item={item}

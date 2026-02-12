@@ -3,6 +3,11 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
 dotenv.config();
@@ -98,6 +103,10 @@ import usersRouter from './routes/users.js';
 import chatRouter from './routes/chat.js';
 import authRouter from './routes/auth.js';
 import contactRouter from './routes/contact.js';
+import adminRouter from './routes/admin.js';
+import jobsRouter from './routes/jobs.js';
+import testimonialsRouter from './routes/testimonials.js';
+import announcementsRouter from './routes/announcements.js';
 
 // Health check route
 app.get('/', (req, res) => {
@@ -124,6 +133,11 @@ app.use('/api/users', usersRouter);
 app.use('/api/chat', chatRouter);
 app.use('/api/contact', contactRouter);
 app.use('/auth', authRouter);
+app.use('/admin', adminRouter);
+app.use('/api/jobs', jobsRouter);
+app.use('/api/testimonials', testimonialsRouter);
+app.use('/api/announcements', announcementsRouter);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Start the server
 app.listen(PORT, async () => {

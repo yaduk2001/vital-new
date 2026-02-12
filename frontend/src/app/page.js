@@ -10,7 +10,7 @@ import Navbar from '../components/Navbar';
 import TiltCard from '../components/TiltCard';
 import MagneticButton from '../components/MagneticButton';
 import LiveBackground from '../components/LiveBackground';
-import { FaLink, FaChartLine, FaBolt, FaLanguage, FaBullhorn, FaShieldAlt, FaArrowRight, FaCogs, FaBrain, FaNetworkWired } from 'react-icons/fa';
+import { FaLink, FaChartLine, FaBolt, FaLanguage, FaBullhorn, FaShieldAlt, FaArrowRight, FaCogs, FaBrain, FaNetworkWired, FaPlay, FaPause } from 'react-icons/fa';
 
 export default function Home() {
   const [scrollY, setScrollY] = useState(0);
@@ -93,29 +93,43 @@ export default function Home() {
     },
   ];
 
-  const testimonials = [
-    {
-      name: "Sarah Chen",
-      role: "CTO, TechFlow Inc",
-      content: "Supe AI transformed our customer service operations. Response times improved by 80% while maintaining quality.",
-      avatar: "👩‍💼",
-      rating: 5
-    },
-    {
-      name: "Marcus Rodriguez",
-      role: "CEO, Global Solutions",
-      content: "The multilingual capabilities are incredible. We can now serve customers in 15 different languages seamlessly.",
-      avatar: "👨‍💼",
-      rating: 5
-    },
-    {
-      name: "Dr. Emily Watson",
-      role: "Head of AI, InnovateCorp",
-      content: "The real-time processing and automation features have revolutionized our workflow. Highly recommended!",
-      avatar: "👩‍🔬",
-      rating: 5
+  const [testimonialsData, setTestimonialsData] = useState([]);
+  const [activeTestimonialIndex, setActiveTestimonialIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef(null);
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+        const res = await fetch(`${backendUrl}/api/testimonials`);
+        if (res.ok) {
+          const data = await res.json();
+          setTestimonialsData(data.testimonials || []);
+        }
+      } catch (error) {
+        console.error('Error fetching testimonials:', error);
+      }
+    };
+    fetchTestimonials();
+  }, []);
+
+  const handlePlayPause = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
     }
-  ];
+  };
+
+  const handeTabClick = (index) => {
+    setActiveTestimonialIndex(index);
+    setIsPlaying(false);
+    // Audio will auto-update src, just need to reset play state
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -403,7 +417,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Testimonials - Dynamic Audio Section */}
       <section className="py-20 lg:py-32 relative overflow-hidden">
         <LiveBackground src="/images/hand-ai.webp" opacity={0.2} blur="blur-md" />
 
@@ -429,37 +443,111 @@ export default function Home() {
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Client Stories
             </h2>
+            <p className="text-xl text-gray-400">
+              Listen to what our partners say about Supe AI
+            </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {testimonials.map((testimonial, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <TiltCard spotlight={true} spotlightColor="rgba(255, 255, 255, 0.1)" className="h-full">
-                  <div className="h-full flex flex-col p-8 rounded-2xl bg-black/60 border border-white/5 hover:border-white/20 transition-all duration-300 backdrop-blur-sm">
-                    <div className="text-4xl text-blue-500/30 font-serif mb-6">&ldquo;</div>
-                    <p className="text-gray-300 text-sm leading-relaxed mb-8 flex-grow italic relative z-10">
-                      {testimonial.content}
-                    </p>
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-xl">
-                        {testimonial.avatar}
+          {testimonialsData.length > 0 ? (
+            <div className="max-w-5xl mx-auto">
+              {/* Main Content Area */}
+              <div className="flex flex-col md:flex-row gap-8 mb-12 items-center justify-center">
+                {/* Image & Player Card */}
+                <motion.div
+                  key={activeTestimonialIndex}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4 }}
+                  className="relative group w-full md:w-1/2 aspect-square max-w-[320px]"
+                >
+                  <TiltCard spotlight={true} spotlightColor="rgba(59, 130, 246, 0.3)" className="h-full">
+                    <div className="h-full w-full rounded-2xl overflow-hidden border border-white/10 bg-black/50 relative shadow-2xl">
+                      {/* Background Image */}
+                      {testimonialsData[activeTestimonialIndex].photoUrl ? (
+                        <img
+                          src={testimonialsData[activeTestimonialIndex].photoUrl}
+                          alt={testimonialsData[activeTestimonialIndex].name}
+                          className="w-full h-full object-cover opacity-100 group-hover:brightness-110 transition-all duration-300"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-gray-800 to-black flex items-center justify-center">
+                          <span className="text-5xl">👤</span>
+                        </div>
+                      )}
+
+                      {/* Play Overlay */}
+                      <div className="absolute inset-0 flex items-center justify-center z-10">
+                        <button
+                          onClick={handlePlayPause}
+                          className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md border border-white/30 flex items-center justify-center text-white text-2xl hover:scale-110 hover:bg-white/20 transition-all duration-300 shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+                        >
+                          {isPlaying ? <FaPause className="ml-0.5" /> : <FaPlay className="ml-1" />}
+                        </button>
                       </div>
-                      <div>
-                        <div className="text-white font-bold text-sm">{testimonial.name}</div>
-                        <div className="text-gray-500 text-xs">{testimonial.role}</div>
+
+                      {/* Audio Element */}
+                      {testimonialsData[activeTestimonialIndex].audioUrl && (
+                        <audio
+                          ref={audioRef}
+                          src={testimonialsData[activeTestimonialIndex].audioUrl}
+                          onEnded={() => setIsPlaying(false)}
+                          className="hidden"
+                        />
+                      )}
+
+                      {/* Info Overlay at Bottom */}
+                      <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black via-black/80 to-transparent">
+                        <h3 className="text-xl font-bold text-white mb-0.5">
+                          {testimonialsData[activeTestimonialIndex].name}
+                        </h3>
+                        <p className="text-cyan-400 text-xs font-medium tracking-wider uppercase">
+                          {testimonialsData[activeTestimonialIndex].post || 'Client'}
+                        </p>
                       </div>
                     </div>
-                  </div>
-                </TiltCard>
-              </motion.div>
-            ))}
-          </div>
+                  </TiltCard>
+                </motion.div>
+
+                {/* Details Section (Optional Text) */}
+                {/* If there's a message, show it here? Or just focus on audio?
+                    User said "Listen to that... Instead of round image use square shape".
+                    I'll keep it simple: Just the main card is the hero. 
+                    But maybe I can show the message on the side if available. 
+                */}
+              </div>
+
+              {/* Tabs / Thumbnails */}
+              <div className="flex flex-wrap justify-center gap-4">
+                {testimonialsData.map((t, index) => (
+                  <button
+                    key={t.id}
+                    onClick={() => handeTabClick(index)}
+                    className={`relative w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden border-2 transition-all duration-300 ${activeTestimonialIndex === index
+                      ? 'border-cyan-500 scale-110 shadow-[0_0_15px_rgba(6,182,212,0.4)]'
+                      : 'border-white/10 opacity-60 hover:opacity-100 hover:scale-105'
+                      }`}
+                  >
+                    {t.photoUrl ? (
+                      <img src={t.photoUrl} alt={t.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full bg-gray-800 flex items-center justify-center text-xs">
+                        {t.name[0]}
+                      </div>
+                    )}
+                    {/* Active Indicator */}
+                    {activeTestimonialIndex === index && (
+                      <div className="absolute inset-0 bg-cyan-500/20" />
+                    )}
+                  </button>
+                ))}
+              </div>
+
+            </div>
+          ) : (
+            <div className="text-center text-gray-500">
+              <p>Connect with admin to add testimonials.</p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -528,8 +616,8 @@ export default function Home() {
                   <h3 className="text-lg font-bold mb-2">
                     <span className="text-blue-400">Email</span>
                   </h3>
-                  <a href="mailto:contact@supeai.in" className="text-gray-400 hover:text-white transition-colors text-sm">
-                    contact@supeai.in
+                  <a href="mailto:hello@supeai.in" className="text-gray-400 hover:text-white transition-colors text-sm">
+                    hello@supeai.in
                   </a>
                 </div>
               </TiltCard>
@@ -543,7 +631,7 @@ export default function Home() {
                     <img src="https://flagcdn.com/in.svg" alt="India Flag" className="h-8 w-auto object-contain drop-shadow-[0_0_10px_rgba(249,115,22,0.3)]" />
                   </div>
                   <h3 className="text-lg font-bold mb-2">
-                    <span className="text-orange-400">India</span> <span className="text-green-400">Office</span>
+                    <span className="text-orange-400">India</span>
                   </h3>
                   <a href="tel:+918075851517" className="text-gray-400 hover:text-white transition-colors text-sm">
                     +91 8075851517
@@ -560,7 +648,7 @@ export default function Home() {
                     <img src="https://flagcdn.com/gb.svg" alt="UK Flag" className="h-8 w-auto object-contain drop-shadow-[0_0_10px_rgba(239,68,68,0.3)]" />
                   </div>
                   <h3 className="text-lg font-bold mb-2">
-                    <span className="text-red-400">UK</span> <span className="text-blue-400">Office</span>
+                    <span className="text-red-400">UK</span>
                   </h3>
                   <a href="tel:+447404465149" className="text-gray-400 hover:text-white transition-colors text-sm">
                     +44 7404 465149
@@ -568,6 +656,8 @@ export default function Home() {
                 </div>
               </TiltCard>
             </div>
+
+
 
             {/* Australia Flag & Phone */}
             <div className="w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.33%-11px)]">
@@ -577,7 +667,7 @@ export default function Home() {
                     <img src="https://flagcdn.com/au.svg" alt="Australia Flag" className="h-8 w-auto object-contain drop-shadow-[0_0_10px_rgba(59,130,246,0.3)]" />
                   </div>
                   <h3 className="text-lg font-bold mb-2">
-                    <span className="text-blue-400">Australia</span> <span className="text-red-400">Office</span>
+                    <span className="text-blue-400">Australia</span>
                   </h3>
                   <a href="tel:+61468371679" className="text-gray-400 hover:text-white transition-colors text-sm">
                     +61 468 371679
@@ -594,7 +684,7 @@ export default function Home() {
                     <img src="https://flagcdn.com/ae.svg" alt="UAE Flag" className="h-8 w-auto object-contain drop-shadow-[0_0_10px_rgba(34,197,94,0.3)]" />
                   </div>
                   <h3 className="text-lg font-bold mb-2">
-                    <span className="text-red-400">Dubai</span> <span className="text-green-400">Office</span>
+                    <span className="text-red-400">Dubai</span>
                   </h3>
                   <a href="tel:+971569779819" className="text-gray-400 hover:text-white transition-colors text-sm">
                     +971 56 977 9819
@@ -611,7 +701,7 @@ export default function Home() {
                     <img src="https://flagcdn.com/de.svg" alt="Germany Flag" className="h-8 w-auto object-contain drop-shadow-[0_0_10px_rgba(234,179,8,0.3)]" />
                   </div>
                   <h3 className="text-lg font-bold mb-2">
-                    <span className="text-yellow-400">Germany</span> <span className="text-red-400">Office</span>
+                    <span className="text-yellow-400">Germany</span>
                   </h3>
                   <a href="tel:+4917632420097" className="text-gray-400 hover:text-white transition-colors text-sm">
                     +49 176 32420097
@@ -620,132 +710,7 @@ export default function Home() {
               </TiltCard>
             </div>
 
-            {/* Address Cards - Maps */}
 
-            {/* Kochi Map - Orange/Green */}
-            <div className="w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.33%-11px)]">
-              <TiltCard spotlight={true} spotlightColor="rgba(255, 255, 255, 0.1)">
-                <div className="h-64 bg-black/60 backdrop-blur-sm rounded-xl border border-white/5 hover:border-white/20 transition-all relative overflow-hidden group">
-                  <iframe
-                    width="100%"
-                    height="100%"
-                    src={`https://maps.google.com/maps?q=Edappally,%20Kochi,%20Kerala,%20India&t=&z=13&ie=UTF8&iwloc=&output=embed`}
-                    frameBorder="0"
-                    scrolling="no"
-                    marginHeight="0"
-                    marginWidth="0"
-                    className="absolute inset-0 grayscale group-hover:grayscale-0 transition-all duration-500 opacity-60 group-hover:opacity-100 pointer-events-none"
-                    title="Kochi Office Map"
-                  ></iframe>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 flex flex-col justify-end pointer-events-none">
-                    <h3 className="text-xl font-bold mb-1">
-                      <span className="text-orange-400">Kochi</span> <span className="text-green-400">Office</span>
-                    </h3>
-                    <p className="text-gray-300 text-xs truncate">Edappally, Kochi, Kerala, India</p>
-                  </div>
-                </div>
-              </TiltCard>
-            </div>
-
-            {/* London Map - Red/Blue */}
-            <div className="w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.33%-11px)]">
-              <TiltCard spotlight={true} spotlightColor="rgba(255, 255, 255, 0.1)">
-                <div className="h-64 bg-black/60 backdrop-blur-sm rounded-xl border border-white/5 hover:border-white/20 transition-all relative overflow-hidden group">
-                  <iframe
-                    width="100%"
-                    height="100%"
-                    src={`https://maps.google.com/maps?q=E16%203RU,%20London,%20UK&t=&z=13&ie=UTF8&iwloc=&output=embed`}
-                    frameBorder="0"
-                    scrolling="no"
-                    marginHeight="0"
-                    marginWidth="0"
-                    className="absolute inset-0 grayscale group-hover:grayscale-0 transition-all duration-500 opacity-60 group-hover:opacity-100 pointer-events-none"
-                    title="London Office Map"
-                  ></iframe>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 flex flex-col justify-end pointer-events-none">
-                    <h3 className="text-xl font-bold mb-1">
-                      <span className="text-red-400">London</span> <span className="text-blue-400">Office</span>
-                    </h3>
-                    <p className="text-gray-300 text-xs truncate">E16 3RU, London, UK</p>
-                  </div>
-                </div>
-              </TiltCard>
-            </div>
-
-            {/* Sydney Map - Blue/Red */}
-            <div className="w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.33%-11px)]">
-              <TiltCard spotlight={true} spotlightColor="rgba(255, 255, 255, 0.1)">
-                <div className="h-64 bg-black/60 backdrop-blur-sm rounded-xl border border-white/5 hover:border-white/20 transition-all relative overflow-hidden group">
-                  <iframe
-                    width="100%"
-                    height="100%"
-                    src={`https://maps.google.com/maps?q=1/8%20Arthur%20St,%20Ryde%20NSW%202112&t=&z=13&ie=UTF8&iwloc=&output=embed`}
-                    frameBorder="0"
-                    scrolling="no"
-                    marginHeight="0"
-                    marginWidth="0"
-                    className="absolute inset-0 grayscale group-hover:grayscale-0 transition-all duration-500 opacity-60 group-hover:opacity-100 pointer-events-none"
-                    title="Sydney Office Map"
-                  ></iframe>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 flex flex-col justify-end pointer-events-none">
-                    <h3 className="text-xl font-bold mb-1">
-                      <span className="text-blue-400">Sydney</span> <span className="text-red-400">Office</span>
-                    </h3>
-                    <p className="text-gray-300 text-xs truncate">1/8 Arthur St, Ryde NSW 2112</p>
-                  </div>
-                </div>
-              </TiltCard>
-            </div>
-
-            {/* Dubai Map - Red/Green */}
-            <div className="w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.33%-11px)]">
-              <TiltCard spotlight={true} spotlightColor="rgba(255, 255, 255, 0.1)">
-                <div className="h-64 bg-black/60 backdrop-blur-sm rounded-xl border border-white/5 hover:border-white/20 transition-all relative overflow-hidden group">
-                  <iframe
-                    width="100%"
-                    height="100%"
-                    src={`https://maps.google.com/maps?q=Silicon%20Oasis%20Pineapple%20Tower,%20Dubai&t=&z=13&ie=UTF8&iwloc=&output=embed`}
-                    frameBorder="0"
-                    scrolling="no"
-                    marginHeight="0"
-                    marginWidth="0"
-                    className="absolute inset-0 grayscale group-hover:grayscale-0 transition-all duration-500 opacity-60 group-hover:opacity-100 pointer-events-none"
-                    title="Dubai Office Map"
-                  ></iframe>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 flex flex-col justify-end pointer-events-none">
-                    <h3 className="text-xl font-bold mb-1">
-                      <span className="text-red-400">Dubai</span> <span className="text-green-400">Office</span>
-                    </h3>
-                    <p className="text-gray-300 text-xs truncate">Silicon Oasis Pineapple Tower, Dubai</p>
-                  </div>
-                </div>
-              </TiltCard>
-            </div>
-
-            {/* Germany Map - Yellow/Red */}
-            <div className="w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.33%-11px)]">
-              <TiltCard spotlight={true} spotlightColor="rgba(255, 255, 255, 0.1)">
-                <div className="h-64 bg-black/60 backdrop-blur-sm rounded-xl border border-white/5 hover:border-white/20 transition-all relative overflow-hidden group">
-                  <iframe
-                    width="100%"
-                    height="100%"
-                    src={`https://maps.google.com/maps?q=Hegaustraße%2054,%2078239%20Rielasingen-Worblingen&t=&z=13&ie=UTF8&iwloc=&output=embed`}
-                    frameBorder="0"
-                    scrolling="no"
-                    marginHeight="0"
-                    marginWidth="0"
-                    className="absolute inset-0 grayscale group-hover:grayscale-0 transition-all duration-500 opacity-60 group-hover:opacity-100 pointer-events-none"
-                    title="Germany Office Map"
-                  ></iframe>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 flex flex-col justify-end pointer-events-none">
-                    <h3 className="text-xl font-bold mb-1">
-                      <span className="text-yellow-400">Germany</span> <span className="text-red-400">Office</span>
-                    </h3>
-                    <p className="text-gray-300 text-xs truncate">Hegaustraße 54, 78239 Rielasingen-Worblingen</p>
-                  </div>
-                </div>
-              </TiltCard>
-            </div>
           </div>
 
           {/* Social Media Links */}
