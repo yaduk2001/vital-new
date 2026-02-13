@@ -115,6 +115,42 @@ router.post('/', verifyAdmin, upload.fields([{ name: 'photo', maxCount: 1 }, { n
     }
 });
 
+
+// PUT /api/testimonials/:id - Update a testimonial (Admin)
+router.put('/:id', verifyAdmin, upload.fields([{ name: 'photo', maxCount: 1 }, { name: 'audio', maxCount: 1 }]), async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, post, gender, message, photoUrl } = req.body;
+
+        const protocol = req.protocol;
+        const host = req.get('host');
+
+        const updates = {};
+        if (name) updates.name = name;
+        if (post !== undefined) updates.post = post;
+        if (gender) updates.gender = gender;
+        if (message !== undefined) updates.message = message;
+        if (photoUrl !== undefined) updates.photoUrl = photoUrl;
+
+        if (req.files) {
+            if (req.files.photo && req.files.photo[0]) {
+                updates.photoUrl = `${protocol}://${host}/uploads/${req.files.photo[0].filename}`;
+            }
+            if (req.files.audio && req.files.audio[0]) {
+                updates.audioUrl = `${protocol}://${host}/uploads/${req.files.audio[0].filename}`;
+            }
+        }
+
+        updates.updatedAt = new Date().toISOString();
+
+        await db.ref(`testimonials/${id}`).update(updates);
+        res.json({ success: true, message: 'Testimonial updated successfully' });
+    } catch (error) {
+        console.error('Error updating testimonial:', error);
+        res.status(500).json({ error: 'Failed to update testimonial' });
+    }
+});
+
 // DELETE /api/testimonials/:id - Delete a testimonial (Admin)
 router.delete('/:id', verifyAdmin, async (req, res) => {
     try {

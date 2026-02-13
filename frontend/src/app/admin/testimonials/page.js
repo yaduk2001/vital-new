@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { FaArrowLeft, FaStar, FaTrash, FaPlus, FaTimes, FaUser, FaBriefcase, FaVenusMars, FaImage, FaSpinner, FaUpload, FaMicrophone, FaMusic } from 'react-icons/fa';
+import { FaArrowLeft, FaStar, FaTrash, FaPlus, FaTimes, FaUser, FaBriefcase, FaVenusMars, FaImage, FaSpinner, FaUpload, FaMicrophone, FaMusic, FaEdit } from 'react-icons/fa';
 import TiltCard from '../../../components/TiltCard';
 import Toast from '../../../components/Toast';
 
@@ -12,6 +12,7 @@ export default function TestimonialsPage() {
     const [testimonials, setTestimonials] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [submitting, setSubmitting] = useState(false);
+    const [editingId, setEditingId] = useState(null);
 
     // Toast state
     const [toast, setToast] = useState({ message: '', type: 'success' });
@@ -63,6 +64,18 @@ export default function TestimonialsPage() {
         }
     };
 
+    const handleEdit = (t) => {
+        setFormData({
+            name: t.name,
+            post: t.post || '',
+            gender: t.gender,
+            message: t.message || '',
+            photoUrl: t.photoUrl || ''
+        });
+        setEditingId(t.id);
+        setShowForm(true);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSubmitting(true);
@@ -73,13 +86,19 @@ export default function TestimonialsPage() {
             submitData.append('name', formData.name);
             submitData.append('post', formData.post);
             submitData.append('gender', formData.gender);
-            submitData.append('message', formData.message); // Optional
-            if (formData.photoUrl) submitData.append('photoUrl', formData.photoUrl);
+            if (formData.message) submitData.append('message', formData.message);
+            if (formData.photoUrl !== undefined) submitData.append('photoUrl', formData.photoUrl);
             if (file) submitData.append('photo', file);
             if (audioFile) submitData.append('audio', audioFile);
 
-            const res = await fetch(`${backendUrl}/api/testimonials`, {
-                method: 'POST',
+            const url = editingId
+                ? `${backendUrl}/api/testimonials/${editingId}`
+                : `${backendUrl}/api/testimonials`;
+
+            const method = editingId ? 'PUT' : 'POST';
+
+            const res = await fetch(url, {
+                method: method,
                 body: submitData,
                 credentials: 'include'
             });
@@ -96,10 +115,11 @@ export default function TestimonialsPage() {
                 });
                 setFile(null);
                 setAudioFile(null);
-                setToast({ message: 'Testimonial added successfully!', type: 'success' });
+                setEditingId(null);
+                setToast({ message: editingId ? 'Testimonial updated!' : 'Testimonial added successfully!', type: 'success' });
             } else {
                 const data = await res.json();
-                setToast({ message: data.error || 'Failed to add testimonial', type: 'error' });
+                setToast({ message: data.error || 'Failed to save testimonial', type: 'error' });
             }
         } catch (error) {
             console.error('Error submitting form:', error);
@@ -154,7 +174,11 @@ export default function TestimonialsPage() {
                     </h1>
                 </div>
                 <button
-                    onClick={() => setShowForm(true)}
+                    onClick={() => {
+                        setEditingId(null);
+                        setFormData({ name: '', post: '', gender: 'male', message: '', photoUrl: '' });
+                        setShowForm(true);
+                    }}
                     className="flex items-center gap-2 bg-pink-600 hover:bg-pink-500 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-lg shadow-pink-500/20"
                 >
                     <FaPlus /> Add New
@@ -174,12 +198,22 @@ export default function TestimonialsPage() {
                         >
                             <TiltCard spotlight={true} spotlightColor="rgba(236, 72, 153, 0.1)">
                                 <div className="bg-white/5 border border-white/10 rounded-xl p-6 h-full flex flex-col relative group hover:border-pink-500/30 transition-all">
-                                    <button
-                                        onClick={() => handleDelete(t.id)}
-                                        className="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 z-10"
-                                    >
-                                        <FaTrash />
-                                    </button>
+                                    <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 z-10 transition-opacity">
+                                        <button
+                                            onClick={() => handleEdit(t)}
+                                            className="text-gray-500 hover:text-blue-400 transition-colors"
+                                            title="Edit"
+                                        >
+                                            <FaEdit />
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(t.id)}
+                                            className="text-gray-500 hover:text-red-500 transition-colors"
+                                            title="Delete"
+                                        >
+                                            <FaTrash />
+                                        </button>
+                                    </div>
 
                                     <div className="flex items-center gap-4 mb-4">
                                         <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 p-[2px] overflow-hidden flex-shrink-0">
@@ -254,7 +288,8 @@ export default function TestimonialsPage() {
                             </button>
 
                             <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-                                <FaPlus className="text-pink-500 text-lg" /> Add Testimonial
+                                {editingId ? <FaEdit className="text-pink-500 text-lg" /> : <FaPlus className="text-pink-500 text-lg" />}
+                                {editingId ? 'Edit Testimonial' : 'Add Testimonial'}
                             </h2>
 
                             <form onSubmit={handleSubmit} className="space-y-4">
@@ -367,7 +402,7 @@ export default function TestimonialsPage() {
                                     disabled={submitting}
                                     className="w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-pink-500/20 flex items-center justify-center gap-2"
                                 >
-                                    {submitting ? <FaSpinner className="animate-spin" /> : 'Post Testimonial'}
+                                    {submitting ? <FaSpinner className="animate-spin" /> : (editingId ? 'Update Testimonial' : 'Post Testimonial')}
                                 </button>
                             </form>
                         </motion.div>

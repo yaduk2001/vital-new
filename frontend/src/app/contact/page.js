@@ -240,6 +240,10 @@ export default function ContactPage() {
                         <span className="fi fi-de flex-shrink-0" style={{ width: '24px', height: '18px' }}></span>
                         <a href="tel:+4917632420097" className="hover:text-cyan-400 transition">+49 176 32420097</a>
                       </div>
+                      <div className="flex items-center text-gray-300 gap-3">
+                        <span className="fi fi-us flex-shrink-0" style={{ width: '24px', height: '18px' }}></span>
+                        <a href="tel:+19142554275" className="hover:text-cyan-400 transition">+1(914) 255-4275</a>
+                      </div>
                     </div>
                   </div>
                 </TiltCard>
@@ -419,6 +423,28 @@ export default function ContactPage() {
                     </h3>
                     <a href="tel:+4917632420097" className="text-gray-400 hover:text-white transition-colors text-sm">
                       +49 176 32420097
+                    </a>
+                  </div>
+                </TiltCard>
+              </motion.div>
+
+              {/* USA Flag & Phone */}
+              <motion.div
+                variants={{ hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1 } }}
+                initial="hidden"
+                whileInView="visible"
+                className="w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.33%-11px)]"
+              >
+                <TiltCard spotlight={true} spotlightColor="rgba(59, 130, 246, 0.2)">
+                  <div className="h-full bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/5 hover:border-blue-500/30 transition-all text-center group">
+                    <div className="h-10 mb-4 flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
+                      <img src="https://flagcdn.com/us.svg" alt="USA Flag" className="h-8 w-auto object-contain drop-shadow-[0_0_10px_rgba(59,130,246,0.3)]" />
+                    </div>
+                    <h3 className="text-lg font-bold mb-2">
+                      <span className="text-blue-400">USA</span>
+                    </h3>
+                    <a href="tel:+19142554275" className="text-gray-400 hover:text-white transition-colors text-sm">
+                      +1(914) 255-4275
                     </a>
                   </div>
                 </TiltCard>
