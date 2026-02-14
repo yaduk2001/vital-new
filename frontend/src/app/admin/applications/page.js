@@ -1,20 +1,43 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { FaArrowLeft, FaBriefcase, FaEnvelope, FaPhone, FaLinkedin, FaGithub, FaSpinner, FaTrash, FaUser, FaClock, FaGraduationCap, FaCode } from 'react-icons/fa';
 import TiltCard from '../../../components/TiltCard';
+import Toast from '../../../components/Toast';
+import ConfirmModal from '../../../components/ConfirmModal';
 
 export default function ApplicationsPage() {
     const [loading, setLoading] = useState(true);
     const [applications, setApplications] = useState([]);
     const [selectedJob, setSelectedJob] = useState('All');
     const [deletingId, setDeletingId] = useState(null);
+    const [toast, setToast] = useState({ message: '', type: 'success' });
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [appToDelete, setAppToDelete] = useState(null);
+    const router = useRouter();
 
     useEffect(() => {
-        fetchApplications();
-    }, []);
+        const checkAuth = async () => {
+            try {
+                const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+                const res = await fetch(`${backendUrl}/admin/check-auth`, {
+                    credentials: 'include'
+                });
+                if (!res.ok) {
+                    router.push('/admin/login');
+                } else {
+                    fetchApplications();
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                router.push('/admin/login');
+            }
+        };
+        checkAuth();
+    }, [router]);
 
     const fetchApplications = async () => {
         try {
@@ -34,27 +57,36 @@ export default function ApplicationsPage() {
         }
     };
 
-    const handleDelete = async (app) => {
-        if (!confirm(`Are you sure you want to delete the application from ${app.name}?`)) return;
+    const handleDelete = (app) => {
+        setAppToDelete(app);
+        setShowDeleteModal(true);
+    };
 
-        setDeletingId(app.id);
+    const confirmDelete = async () => {
+        if (!appToDelete) return;
+
+        setDeletingId(appToDelete.id);
         try {
             const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
-            const res = await fetch(`${backendUrl}/api/jobs/applications/${app.jobId}/${app.id}`, {
+            const res = await fetch(`${backendUrl}/api/jobs/applications/${appToDelete.jobId}/${appToDelete.id}`, {
                 method: 'DELETE',
                 credentials: 'include'
             });
 
             if (res.ok) {
-                setApplications(prev => prev.filter(a => a.id !== app.id));
+                setApplications(prev => prev.filter(a => a.id !== appToDelete.id));
+                setToast({ message: 'Application deleted', type: 'success' });
             } else {
-                alert('Failed to delete application');
+                const data = await res.json();
+                setToast({ message: data.error || 'Failed to delete application', type: 'error' });
             }
         } catch (error) {
             console.error('Error deleting application:', error);
-            alert('An error occurred while deleting');
+            setToast({ message: 'An error occurred while deleting', type: 'error' });
         } finally {
             setDeletingId(null);
+            setShowDeleteModal(false);
+            setAppToDelete(null);
         }
     };
 
@@ -71,7 +103,19 @@ export default function ApplicationsPage() {
     );
 
     return (
-        <div className="min-h-screen bg-black text-white p-4 md:p-8">
+        <div className="min-h-screen bg-black text-white p-4 md:p-8 relative">
+            <Toast
+                message={toast.message}
+                type={toast.type}
+                onClose={() => setToast({ message: '', type: 'success' })}
+            />
+            <ConfirmModal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={confirmDelete}
+                title="Delete Application"
+                message={`Are you sure you want to delete the application from ${appToDelete?.name || 'this applicant'}? This action cannot be undone.`}
+            />
             <header className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 sticky top-0 bg-black/80 backdrop-blur-md z-10 py-4 border-b border-white/5">
                 <div>
                     <Link href="/admin/dashboard" className="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-2 transition-colors">

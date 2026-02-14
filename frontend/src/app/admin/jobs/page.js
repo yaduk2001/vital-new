@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { FaArrowLeft, FaBriefcase, FaMoneyBillWave, FaMapMarkerAlt, FaClock, FaSpinner, FaUsers, FaToggleOn, FaToggleOff, FaTrash } from 'react-icons/fa';
 import TiltCard from '../../../components/TiltCard';
+import Toast from '../../../components/Toast';
+import ConfirmModal from '../../../components/ConfirmModal';
 
 export default function ManageJobsPage() {
     const [jobs, setJobs] = useState([]);
@@ -13,9 +15,29 @@ export default function ManageJobsPage() {
     const [filter, setFilter] = useState('all'); // all, active, expired
     const router = useRouter();
 
+    const [toast, setToast] = useState({ message: '', type: 'success' });
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteId, setDeleteId] = useState(null);
+
     useEffect(() => {
-        fetchJobs();
-    }, []);
+        const checkAuth = async () => {
+            try {
+                const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+                const res = await fetch(`${backendUrl}/admin/check-auth`, {
+                    credentials: 'include'
+                });
+                if (!res.ok) {
+                    router.push('/admin/login');
+                } else {
+                    fetchJobs();
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                router.push('/admin/login');
+            }
+        };
+        checkAuth();
+    }, [router]);
 
     const fetchJobs = async () => {
         try {
@@ -51,32 +73,43 @@ export default function ManageJobsPage() {
             if (!res.ok) {
                 throw new Error('Failed to update status');
             }
+            setToast({ message: 'Status updated', type: 'success' });
         } catch (error) {
             console.error('Error toggling status:', error);
             // Revert on error
             setJobs(jobs);
-            alert('Failed to update job status');
+            setToast({ message: 'Failed to update job status', type: 'error' });
         }
     };
 
-    const deleteJob = async (jobId) => {
-        if (!confirm('Are you sure you want to delete this job posting? This cannot be undone.')) return;
+    const deleteJob = (jobId) => {
+        setDeleteId(jobId);
+        setShowDeleteModal(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!deleteId) return;
 
         try {
             const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
-            const res = await fetch(`${backendUrl}/api/jobs/${jobId}`, {
+            const res = await fetch(`${backendUrl}/api/jobs/${deleteId}`, {
                 method: 'DELETE',
                 credentials: 'include'
             });
 
             if (res.ok) {
-                setJobs(jobs.filter(job => job.id !== jobId));
+                setJobs(jobs.filter(job => job.id !== deleteId));
+                setToast({ message: 'Job deleted', type: 'success' });
             } else {
-                alert('Failed to delete job');
+                const data = await res.json();
+                setToast({ message: data.error || 'Failed to delete job', type: 'error' });
             }
         } catch (error) {
             console.error('Error deleting job:', error);
-            alert('Error deleting job');
+            setToast({ message: 'Error deleting job', type: 'error' });
+        } finally {
+            setShowDeleteModal(false);
+            setDeleteId(null);
         }
     };
 
@@ -87,7 +120,20 @@ export default function ManageJobsPage() {
     });
 
     return (
-        <div className="min-h-screen bg-black text-white p-4 md:p-8">
+        <div className="min-h-screen bg-black text-white p-4 md:p-8 relative">
+            <Toast
+                message={toast.message}
+                type={toast.type}
+                onClose={() => setToast({ message: '', type: 'success' })}
+            />
+            <ConfirmModal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={confirmDelete}
+                title="Delete Job"
+                message="Are you sure you want to delete this job posting? This cannot be undone."
+            />
+
             <header className="mb-8">
                 <Link href="/admin/dashboard" className="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-4 transition-colors">
                     <FaArrowLeft /> Back to Dashboard
@@ -109,8 +155,8 @@ export default function ManageJobsPage() {
                         key={f}
                         onClick={() => setFilter(f)}
                         className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${filter === f
-                                ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/50'
-                                : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10'
+                            ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/50'
+                            : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10'
                             }`}
                     >
                         {f.charAt(0).toUpperCase() + f.slice(1)} ({
@@ -144,14 +190,14 @@ export default function ManageJobsPage() {
                             >
                                 <TiltCard spotlight={true} spotlightColor="rgba(6, 182, 212, 0.1)">
                                     <div className={`h-full border rounded-2xl p-6 flex flex-col justify-between backdrop-blur-sm transition-colors ${job.isActive === false
-                                            ? 'bg-red-900/10 border-red-500/20'
-                                            : 'bg-white/5 border-white/10 hover:border-cyan-500/30'
+                                        ? 'bg-red-900/10 border-red-500/20'
+                                        : 'bg-white/5 border-white/10 hover:border-cyan-500/30'
                                         }`}>
                                         <div>
                                             <div className="flex justify-between items-start mb-4">
                                                 <span className={`text-xs px-3 py-1 rounded-full border font-medium ${job.isActive === false
-                                                        ? 'bg-red-500/10 text-red-400 border-red-500/20'
-                                                        : 'bg-green-500/10 text-green-400 border-green-500/20'
+                                                    ? 'bg-red-500/10 text-red-400 border-red-500/20'
+                                                    : 'bg-green-500/10 text-green-400 border-green-500/20'
                                                     }`}>
                                                     {job.isActive === false ? 'Expired' : 'Active'}
                                                 </span>
@@ -192,8 +238,8 @@ export default function ManageJobsPage() {
                                             <button
                                                 onClick={() => toggleJobStatus(job.id, job.isActive !== false)}
                                                 className={`w-full py-2.5 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${job.isActive === false
-                                                        ? 'bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/20'
-                                                        : 'bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20'
+                                                    ? 'bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/20'
+                                                    : 'bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20'
                                                     }`}
                                             >
                                                 {job.isActive === false ? (

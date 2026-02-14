@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { FaUsers, FaUserPlus, FaUserCheck, FaUserTimes, FaTrash, FaSignOutAlt, FaSearch, FaEllipsisH, FaChartLine, FaArrowLeft, FaSpinner, FaBriefcase, FaArrowRight, FaEnvelope, FaStar, FaBullhorn } from 'react-icons/fa';
 import TiltCard from '../../../components/TiltCard';
+import Toast from '../../../components/Toast';
+import ConfirmModal from '../../../components/ConfirmModal';
 
 // Mock components if needed, or imported
 const StatsCard = ({ title, value, icon, color, delay }) => (
@@ -35,6 +37,10 @@ export default function AdminDashboard() {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedUser, setSelectedUser] = useState(null);
     const router = useRouter();
+
+    const [toast, setToast] = useState({ message: '', type: 'success' });
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteUid, setDeleteUid] = useState(null);
 
     const fetchUsers = async () => {
         try {
@@ -109,22 +115,34 @@ export default function AdminDashboard() {
         }
     };
 
-    const deleteUser = async (uid) => {
-        if (!confirm('Are you certain? This action cannot be undone.')) return;
+    const deleteUser = (uid) => {
+        setDeleteUid(uid);
+        setShowDeleteModal(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!deleteUid) return;
 
         try {
             const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
-            const res = await fetch(`${backendUrl}/admin/users/${uid}`, {
+            const res = await fetch(`${backendUrl}/admin/users/${deleteUid}`, {
                 method: 'DELETE',
                 credentials: 'include'
             });
 
             if (res.ok) {
-                setUsers(users.filter(u => u.uid !== uid));
+                setUsers(users.filter(u => u.uid !== deleteUid));
                 fetchStats();
+                setToast({ message: 'User deleted', type: 'success' });
+            } else {
+                setToast({ message: 'Failed to delete user', type: 'error' });
             }
         } catch (error) {
             console.error('Failed to delete user:', error);
+            setToast({ message: 'Error deleting user', type: 'error' });
+        } finally {
+            setShowDeleteModal(false);
+            setDeleteUid(null);
         }
     };
 
@@ -142,7 +160,19 @@ export default function AdminDashboard() {
     }
 
     return (
-        <div className="min-h-screen bg-black text-white p-4 md:p-8">
+        <div className="min-h-screen bg-black text-white p-4 md:p-8 relative">
+            <Toast
+                message={toast.message}
+                type={toast.type}
+                onClose={() => setToast({ message: '', type: 'success' })}
+            />
+            <ConfirmModal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={confirmDelete}
+                title="Delete User"
+                message="Are you sure you want to delete this user? This action cannot be undone."
+            />
             {/* Header */}
             <header className="flex flex-col md:flex-row justify-between items-center mb-12 gap-4">
                 <div>

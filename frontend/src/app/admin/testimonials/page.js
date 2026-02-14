@@ -1,11 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { FaArrowLeft, FaStar, FaTrash, FaPlus, FaTimes, FaUser, FaBriefcase, FaVenusMars, FaImage, FaSpinner, FaUpload, FaMicrophone, FaMusic, FaEdit } from 'react-icons/fa';
+import { FaArrowLeft, FaStar, FaTrash, FaPlus, FaTimes, FaUser, FaBriefcase, FaVenusMars, FaImage, FaSpinner, FaUpload, FaMicrophone, FaMusic, FaEdit, FaPlay, FaPause } from 'react-icons/fa';
 import TiltCard from '../../../components/TiltCard';
 import Toast from '../../../components/Toast';
+import ConfirmModal from '../../../components/ConfirmModal';
 
 export default function TestimonialsPage() {
     const [loading, setLoading] = useState(true);
@@ -13,9 +15,12 @@ export default function TestimonialsPage() {
     const [showForm, setShowForm] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [editingId, setEditingId] = useState(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteId, setDeleteId] = useState(null);
 
     // Toast state
     const [toast, setToast] = useState({ message: '', type: 'success' });
+    const router = useRouter();
 
     const [formData, setFormData] = useState({
         name: '',
@@ -26,10 +31,29 @@ export default function TestimonialsPage() {
     });
     const [file, setFile] = useState(null);
     const [audioFile, setAudioFile] = useState(null);
+    const [existingAudioUrl, setExistingAudioUrl] = useState(null);
+    const audioRef = useRef(null);
+    const [isPlaying, setIsPlaying] = useState(false);
 
     useEffect(() => {
-        fetchTestimonials();
-    }, []);
+        const checkAuth = async () => {
+            try {
+                const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+                const res = await fetch(`${backendUrl}/admin/check-auth`, {
+                    credentials: 'include'
+                });
+                if (!res.ok) {
+                    router.push('/admin/login');
+                } else {
+                    fetchTestimonials();
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                router.push('/admin/login');
+            }
+        };
+        checkAuth();
+    }, [router]);
 
     const fetchTestimonials = async () => {
         try {
@@ -64,6 +88,17 @@ export default function TestimonialsPage() {
         }
     };
 
+    const toggleAudio = () => {
+        if (audioRef.current) {
+            if (isPlaying) {
+                audioRef.current.pause();
+            } else {
+                audioRef.current.play();
+            }
+            setIsPlaying(!isPlaying);
+        }
+    };
+
     const handleEdit = (t) => {
         setFormData({
             name: t.name,
@@ -72,6 +107,7 @@ export default function TestimonialsPage() {
             message: t.message || '',
             photoUrl: t.photoUrl || ''
         });
+        setExistingAudioUrl(t.audioUrl || null);
         setEditingId(t.id);
         setShowForm(true);
     };
@@ -115,6 +151,10 @@ export default function TestimonialsPage() {
                 });
                 setFile(null);
                 setAudioFile(null);
+                setFile(null);
+                setAudioFile(null);
+                setExistingAudioUrl(null);
+                setIsPlaying(false);
                 setEditingId(null);
                 setToast({ message: editingId ? 'Testimonial updated!' : 'Testimonial added successfully!', type: 'success' });
             } else {
@@ -129,24 +169,34 @@ export default function TestimonialsPage() {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!confirm('Are you sure you want to delete this testimonial?')) return;
+    const handleDelete = (id) => {
+        setDeleteId(id);
+        setShowDeleteModal(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!deleteId) return;
+
         try {
             const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
-            const res = await fetch(`${backendUrl}/api/testimonials/${id}`, {
+            const res = await fetch(`${backendUrl}/api/testimonials/${deleteId}`, {
                 method: 'DELETE',
                 credentials: 'include'
             });
 
             if (res.ok) {
-                setTestimonials(prev => prev.filter(t => t.id !== id));
+                setTestimonials(prev => prev.filter(t => t.id !== deleteId));
                 setToast({ message: 'Testimonial deleted', type: 'success' });
             } else {
-                setToast({ message: 'Failed to delete testimonial', type: 'error' });
+                const data = await res.json();
+                setToast({ message: data.error || 'Failed to delete testimonial', type: 'error' });
             }
         } catch (error) {
             console.error('Error deleting testimonial:', error);
             setToast({ message: 'Error deleting item', type: 'error' });
+        } finally {
+            setShowDeleteModal(false);
+            setDeleteId(null);
         }
     };
 
@@ -164,6 +214,14 @@ export default function TestimonialsPage() {
                 onClose={() => setToast({ message: '', type: 'success' })}
             />
 
+            <ConfirmModal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={confirmDelete}
+                title="Delete Testimonial"
+                message="Are you sure you want to delete this testimonial? This action cannot be undone."
+            />
+
             <header className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 sticky top-0 bg-black/80 backdrop-blur-md z-10 py-4 border-b border-white/5">
                 <div>
                     <Link href="/admin/dashboard" className="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-2 transition-colors">
@@ -177,6 +235,10 @@ export default function TestimonialsPage() {
                     onClick={() => {
                         setEditingId(null);
                         setFormData({ name: '', post: '', gender: 'male', message: '', photoUrl: '' });
+                        setExistingAudioUrl(null);
+                        setIsPlaying(false);
+                        setFile(null);
+                        setAudioFile(null);
                         setShowForm(true);
                     }}
                     className="flex items-center gap-2 bg-pink-600 hover:bg-pink-500 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-lg shadow-pink-500/20"
@@ -372,6 +434,30 @@ export default function TestimonialsPage() {
                                 {/* Audio Upload - Primary Content */}
                                 <div>
                                     <label className="block text-gray-400 text-sm mb-2 font-medium">Audio Callback <span className="text-red-500">*</span></label>
+
+                                    {existingAudioUrl && (
+                                        <div className="mb-3 p-3 bg-white/5 rounded-lg border border-white/10 flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-8 h-8 rounded-full bg-pink-500/20 flex items-center justify-center text-pink-500">
+                                                    <FaMusic className="text-xs" />
+                                                </div>
+                                                <div>
+                                                    <p className="text-xs text-gray-400 uppercase font-bold">Current Audio</p>
+                                                    <p className="text-xs text-green-400">File attached</p>
+                                                </div>
+                                            </div>
+
+                                            <button
+                                                type="button"
+                                                onClick={toggleAudio}
+                                                className="w-8 h-8 rounded-full bg-pink-600 hover:bg-pink-500 flex items-center justify-center text-white transition-all shadow-lg shadow-pink-500/20 active:scale-95"
+                                            >
+                                                {isPlaying ? <FaPause className="text-xs" /> : <FaPlay className="text-xs ml-0.5" />}
+                                            </button>
+                                            <audio ref={audioRef} src={existingAudioUrl} onEnded={() => setIsPlaying(false)} className="hidden" />
+                                        </div>
+                                    )}
+
                                     <div className="relative mb-2">
                                         <FaMicrophone className="absolute left-3 top-3.5 text-gray-500" />
                                         <input
@@ -380,9 +466,10 @@ export default function TestimonialsPage() {
                                             onChange={handleAudioChange}
                                             accept="audio/*"
                                             className="w-full bg-black/50 border border-white/10 rounded-lg pl-10 pr-4 py-3 text-white text-sm focus:border-pink-500 focus:outline-none file:mr-4 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-pink-500/10 file:text-pink-400 hover:file:bg-pink-500/20"
-                                            required={!formData.message} // Required if no message provided
+                                            required={!formData.message && !existingAudioUrl} // Required if no message provided AND no existing audio
                                         />
                                     </div>
+                                    {existingAudioUrl && <p className="text-[10px] text-gray-500 pl-1">* Upload new file to replace existing audio</p>}
                                 </div>
 
                                 <div>

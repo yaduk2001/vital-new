@@ -1,11 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { FaArrowLeft, FaBullhorn, FaTrash, FaPlus, FaTimes, FaPen, FaSpinner } from 'react-icons/fa';
 import TiltCard from '../../../components/TiltCard';
 import Toast from '../../../components/Toast';
+import ConfirmModal from '../../../components/ConfirmModal';
 
 export default function ManageAnnouncementsPage() {
     const [loading, setLoading] = useState(true);
@@ -14,9 +16,12 @@ export default function ManageAnnouncementsPage() {
     const [submitting, setSubmitting] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [editId, setEditId] = useState(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteId, setDeleteId] = useState(null);
 
     // Toast State
     const [toast, setToast] = useState({ message: '', type: 'success' });
+    const router = useRouter();
 
     const [formData, setFormData] = useState({
         title: '',
@@ -25,8 +30,24 @@ export default function ManageAnnouncementsPage() {
     });
 
     useEffect(() => {
-        fetchAnnouncements();
-    }, []);
+        const checkAuth = async () => {
+            try {
+                const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+                const res = await fetch(`${backendUrl}/admin/check-auth`, {
+                    credentials: 'include'
+                });
+                if (!res.ok) {
+                    router.push('/admin/login');
+                } else {
+                    fetchAnnouncements();
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                router.push('/admin/login');
+            }
+        };
+        checkAuth();
+    }, [router]);
 
     const fetchAnnouncements = async () => {
         try {
@@ -102,24 +123,34 @@ export default function ManageAnnouncementsPage() {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!confirm('Are you sure you want to delete this announcement?')) return;
+    const handleDelete = (id) => {
+        setDeleteId(id);
+        setShowDeleteModal(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!deleteId) return;
+
         try {
             const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
-            const res = await fetch(`${backendUrl}/api/announcements/${id}`, {
+            const res = await fetch(`${backendUrl}/api/announcements/${deleteId}`, {
                 method: 'DELETE',
                 credentials: 'include'
             });
 
             if (res.ok) {
-                setAnnouncements(prev => prev.filter(a => a.id !== id));
+                setAnnouncements(prev => prev.filter(a => a.id !== deleteId));
                 setToast({ message: 'Announcement deleted', type: 'success' });
             } else {
-                setToast({ message: 'Failed to delete announcement', type: 'error' });
+                const data = await res.json();
+                setToast({ message: data.error || 'Failed to delete announcement', type: 'error' });
             }
         } catch (error) {
             console.error('Error deleting announcement:', error);
             setToast({ message: 'Error deleting announcement', type: 'error' });
+        } finally {
+            setShowDeleteModal(false);
+            setDeleteId(null);
         }
     };
 
@@ -135,6 +166,14 @@ export default function ManageAnnouncementsPage() {
                 message={toast.message}
                 type={toast.type}
                 onClose={() => setToast({ message: '', type: 'success' })}
+            />
+
+            <ConfirmModal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={confirmDelete}
+                title="Delete Announcement"
+                message="Are you sure you want to delete this announcement? This action cannot be undone."
             />
 
             <header className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 sticky top-0 bg-black/80 backdrop-blur-md z-10 py-4 border-b border-white/5">
